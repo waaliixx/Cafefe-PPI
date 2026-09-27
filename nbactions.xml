@@ -10,8 +10,5 @@
             <goals>
                 <goal>liberty:dev</goal>
             </goals>
-            <properties>
-                <netbeans.deploy>true</netbeans.deploy>
-            </properties>
         </action>
     </actions>

@@ -9,7 +9,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
@@ -19,6 +18,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.UUID;
 
 /**
  *
@@ -36,12 +36,10 @@ public class EmpleadoRol implements Serializable {
     @Id
     @Basic(optional = false)
     @NotNull
-    @Lob
     @Column(name = "id_empleado_rol")
-    private Object idEmpleadoRol;
-    @Lob
+    private UUID idEmpleadoRol;
     @Column(name = "id_empleado")
-    private Object idEmpleado;
+    private UUID idEmpleado;
     @Column(name = "activo")
     private Boolean activo;
     @Size(max = 2147483647)
@@ -58,23 +56,23 @@ public class EmpleadoRol implements Serializable {
     public EmpleadoRol() {
     }
 
-    public EmpleadoRol(Object idEmpleadoRol) {
+    public EmpleadoRol(UUID idEmpleadoRol) {
         this.idEmpleadoRol = idEmpleadoRol;
     }
 
-    public Object getIdEmpleadoRol() {
+    public UUID getIdEmpleadoRol() {
         return idEmpleadoRol;
     }
 
-    public void setIdEmpleadoRol(Object idEmpleadoRol) {
+    public void setIdEmpleadoRol(UUID idEmpleadoRol) {
         this.idEmpleadoRol = idEmpleadoRol;
     }
 
-    public Object getIdEmpleado() {
+    public UUID getIdEmpleado() {
         return idEmpleado;
     }
 
-    public void setIdEmpleado(Object idEmpleado) {
+    public void setIdEmpleado(UUID idEmpleado) {
         this.idEmpleado = idEmpleado;
     }
 

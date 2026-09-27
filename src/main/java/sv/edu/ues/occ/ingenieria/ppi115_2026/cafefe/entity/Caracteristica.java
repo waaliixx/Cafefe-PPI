@@ -9,7 +9,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
@@ -19,6 +18,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.UUID;
 
 /**
  *
@@ -37,9 +37,8 @@ public class Caracteristica implements Serializable {
     @Id
     @Basic(optional = false)
     @NotNull
-    @Lob
     @Column(name = "id_caracteristica")
-    private Object idCaracteristica;
+    private UUID idCaracteristica;
     @Size(max = 155)
     @Column(name = "nombre")
     private String nombre;
@@ -57,15 +56,15 @@ public class Caracteristica implements Serializable {
     public Caracteristica() {
     }
 
-    public Caracteristica(Object idCaracteristica) {
+    public Caracteristica(UUID idCaracteristica) {
         this.idCaracteristica = idCaracteristica;
     }
 
-    public Object getIdCaracteristica() {
+    public UUID getIdCaracteristica() {
         return idCaracteristica;
     }
 
-    public void setIdCaracteristica(Object idCaracteristica) {
+    public void setIdCaracteristica(UUID idCaracteristica) {
         this.idCaracteristica = idCaracteristica;
     }
 

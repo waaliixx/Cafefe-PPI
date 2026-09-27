@@ -9,7 +9,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
@@ -19,6 +18,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.UUID;
 
 /**
  *
@@ -36,9 +36,8 @@ public class Pago implements Serializable {
     @Id
     @Basic(optional = false)
     @NotNull
-    @Lob
     @Column(name = "id_pago")
-    private Object idPago;
+    private UUID idPago;
     @Size(max = 20)
     @Column(name = "estado")
     private String estado;
@@ -54,15 +53,15 @@ public class Pago implements Serializable {
     public Pago() {
     }
 
-    public Pago(Object idPago) {
+    public Pago(UUID idPago) {
         this.idPago = idPago;
     }
 
-    public Object getIdPago() {
+    public UUID getIdPago() {
         return idPago;
     }
 
-    public void setIdPago(Object idPago) {
+    public void setIdPago(UUID idPago) {
         this.idPago = idPago;
     }
 

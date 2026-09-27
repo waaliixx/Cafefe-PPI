@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<persistence version="3.0" xmlns="https://jakarta.ee/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
+<persistence version="3.2" xmlns="https://jakarta.ee/xml/ns/persistence" 
+                           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                           xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence 
+                           https://jakarta.ee/xml/ns/persistence/persistence_3_2.xsd">
   <!-- Define Persistence Unit -->
-  <persistence-unit name="my_persistence_unit">
+  <persistence-unit name="CafefePU"
+                    transaction-type="JTA">
+      <jta-data-source>jdbc/pgdb</jta-data-source>
+      
     <class>sv.edu.ues.occ.ingenieria.ppi115_2026.cafefe.entity.Pago</class>
     <class>sv.edu.ues.occ.ingenieria.ppi115_2026.cafefe.entity.Factura</class>
     <class>sv.edu.ues.occ.ingenieria.ppi115_2026.cafefe.entity.FacturaOrdenProducto</class>
@@ -21,5 +27,11 @@
     <class>sv.edu.ues.occ.ingenieria.ppi115_2026.cafefe.entity.TipoProducto</class>
     <class>sv.edu.ues.occ.ingenieria.ppi115_2026.cafefe.entity.TipoCaracteristica</class>
     <class>sv.edu.ues.occ.ingenieria.ppi115_2026.cafefe.entity.ProductoTipoProducto</class>
+    
+    <properties>
+          <property
+              name="jakarta.persistence.schema-generation.database.action"
+              value="none"/>        
+    </properties>
   </persistence-unit>
 </persistence>

@@ -9,7 +9,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
@@ -20,6 +19,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  *
@@ -37,9 +37,8 @@ public class ProductoTipoProducto implements Serializable {
     @Id
     @Basic(optional = false)
     @NotNull
-    @Lob
     @Column(name = "id_producto_tipo_producto")
-    private Object idProductoTipoProducto;
+    private UUID idProductoTipoProducto;
     @Column(name = "fecha_creacion")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaCreacion;
@@ -56,15 +55,15 @@ public class ProductoTipoProducto implements Serializable {
     public ProductoTipoProducto() {
     }
 
-    public ProductoTipoProducto(Object idProductoTipoProducto) {
+    public ProductoTipoProducto(UUID idProductoTipoProducto) {
         this.idProductoTipoProducto = idProductoTipoProducto;
     }
 
-    public Object getIdProductoTipoProducto() {
+    public UUID getIdProductoTipoProducto() {
         return idProductoTipoProducto;
     }
 
-    public void setIdProductoTipoProducto(Object idProductoTipoProducto) {
+    public void setIdProductoTipoProducto(UUID idProductoTipoProducto) {
         this.idProductoTipoProducto = idProductoTipoProducto;
     }
 

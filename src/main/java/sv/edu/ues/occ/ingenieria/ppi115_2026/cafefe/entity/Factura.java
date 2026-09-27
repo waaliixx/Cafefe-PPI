@@ -9,7 +9,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
@@ -22,6 +21,7 @@ import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  *
@@ -41,9 +41,8 @@ public class Factura implements Serializable {
     @Id
     @Basic(optional = false)
     @NotNull
-    @Lob
     @Column(name = "id_factura")
-    private Object idFactura;
+    private UUID idFactura;
     @Size(max = 155)
     @Column(name = "cliente")
     private String cliente;
@@ -70,15 +69,15 @@ public class Factura implements Serializable {
     public Factura() {
     }
 
-    public Factura(Object idFactura) {
+    public Factura(UUID idFactura) {
         this.idFactura = idFactura;
     }
 
-    public Object getIdFactura() {
+    public UUID getIdFactura() {
         return idFactura;
     }
 
-    public void setIdFactura(Object idFactura) {
+    public void setIdFactura(UUID idFactura) {
         this.idFactura = idFactura;
     }
 

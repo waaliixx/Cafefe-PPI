@@ -8,7 +8,6 @@ import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
@@ -18,6 +17,7 @@ import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.UUID;
 
 /**
  *
@@ -37,9 +37,8 @@ public class Producto implements Serializable {
     @Id
     @Basic(optional = false)
     @NotNull
-    @Lob
     @Column(name = "id_producto")
-    private Object idProducto;
+    private UUID idProducto;
     @Size(max = 155)
     @Column(name = "nombre")
     private String nombre;
@@ -65,20 +64,20 @@ public class Producto implements Serializable {
     public Producto() {
     }
 
-    public Producto(Object idProducto) {
+    public Producto(UUID idProducto) {
         this.idProducto = idProducto;
     }
 
-    public Producto(Object idProducto, BigDecimal precioSugerido) {
+    public Producto(UUID idProducto, BigDecimal precioSugerido) {
         this.idProducto = idProducto;
         this.precioSugerido = precioSugerido;
     }
 
-    public Object getIdProducto() {
+    public UUID getIdProducto() {
         return idProducto;
     }
 
-    public void setIdProducto(Object idProducto) {
+    public void setIdProducto(UUID idProducto) {
         this.idProducto = idProducto;
     }
 

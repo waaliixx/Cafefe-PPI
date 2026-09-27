@@ -9,7 +9,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
@@ -21,6 +20,7 @@ import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  *
@@ -37,9 +37,8 @@ public class Orden implements Serializable {
     @Id
     @Basic(optional = false)
     @NotNull
-    @Lob
     @Column(name = "id_orden")
-    private Object idOrden;
+    private UUID idOrden;
     @Column(name = "fecha_creacion")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaCreacion;
@@ -52,15 +51,15 @@ public class Orden implements Serializable {
     public Orden() {
     }
 
-    public Orden(Object idOrden) {
+    public Orden(UUID idOrden) {
         this.idOrden = idOrden;
     }
 
-    public Object getIdOrden() {
+    public UUID getIdOrden() {
         return idOrden;
     }
 
-    public void setIdOrden(Object idOrden) {
+    public void setIdOrden(UUID idOrden) {
         this.idOrden = idOrden;
     }
 

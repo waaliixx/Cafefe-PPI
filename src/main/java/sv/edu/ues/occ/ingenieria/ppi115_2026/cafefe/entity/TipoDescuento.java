@@ -8,13 +8,13 @@ import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.UUID;
 
 /**
  *
@@ -34,9 +34,8 @@ public class TipoDescuento implements Serializable {
     @Id
     @Basic(optional = false)
     @NotNull
-    @Lob
     @Column(name = "id_tipo_descuento")
-    private Object idTipoDescuento;
+    private UUID idTipoDescuento;
     @Size(max = 2147483647)
     @Column(name = "nombre")
     private String nombre;
@@ -51,15 +50,15 @@ public class TipoDescuento implements Serializable {
     public TipoDescuento() {
     }
 
-    public TipoDescuento(Object idTipoDescuento) {
+    public TipoDescuento(UUID idTipoDescuento) {
         this.idTipoDescuento = idTipoDescuento;
     }
 
-    public Object getIdTipoDescuento() {
+    public UUID getIdTipoDescuento() {
         return idTipoDescuento;
     }
 
-    public void setIdTipoDescuento(Object idTipoDescuento) {
+    public void setIdTipoDescuento(UUID idTipoDescuento) {
         this.idTipoDescuento = idTipoDescuento;
     }
 

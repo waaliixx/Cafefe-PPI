@@ -8,7 +8,6 @@ import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
@@ -20,6 +19,7 @@ import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  *
@@ -39,12 +39,10 @@ public class Descuento implements Serializable {
     @Id
     @Basic(optional = false)
     @NotNull
-    @Lob
     @Column(name = "id_descuento")
-    private Object idDescuento;
-    @Lob
+    private UUID idDescuento;
     @Column(name = "id_tipo_descuento")
-    private Object idTipoDescuento;
+    private UUID idTipoDescuento;
     @Size(max = 155)
     @Column(name = "nombre")
     private String nombre;
@@ -63,23 +61,23 @@ public class Descuento implements Serializable {
     public Descuento() {
     }
 
-    public Descuento(Object idDescuento) {
+    public Descuento(UUID idDescuento) {
         this.idDescuento = idDescuento;
     }
 
-    public Object getIdDescuento() {
+    public UUID getIdDescuento() {
         return idDescuento;
     }
 
-    public void setIdDescuento(Object idDescuento) {
+    public void setIdDescuento(UUID idDescuento) {
         this.idDescuento = idDescuento;
     }
 
-    public Object getIdTipoDescuento() {
+    public UUID getIdTipoDescuento() {
         return idTipoDescuento;
     }
 
-    public void setIdTipoDescuento(Object idTipoDescuento) {
+    public void setIdTipoDescuento(UUID idTipoDescuento) {
         this.idTipoDescuento = idTipoDescuento;
     }
 

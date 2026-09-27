@@ -9,7 +9,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
@@ -17,6 +16,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.UUID;
 
 /**
  *
@@ -33,9 +33,8 @@ public class ProductoCaracteristica implements Serializable {
     @Id
     @Basic(optional = false)
     @NotNull
-    @Lob
     @Column(name = "id_producto_caracteristica")
-    private Object idProductoCaracteristica;
+    private UUID idProductoCaracteristica;
     @Size(max = 2147483647)
     @Column(name = "valor")
     private String valor;
@@ -49,15 +48,15 @@ public class ProductoCaracteristica implements Serializable {
     public ProductoCaracteristica() {
     }
 
-    public ProductoCaracteristica(Object idProductoCaracteristica) {
+    public ProductoCaracteristica(UUID idProductoCaracteristica) {
         this.idProductoCaracteristica = idProductoCaracteristica;
     }
 
-    public Object getIdProductoCaracteristica() {
+    public UUID getIdProductoCaracteristica() {
         return idProductoCaracteristica;
     }
 
-    public void setIdProductoCaracteristica(Object idProductoCaracteristica) {
+    public void setIdProductoCaracteristica(UUID idProductoCaracteristica) {
         this.idProductoCaracteristica = idProductoCaracteristica;
     }
 

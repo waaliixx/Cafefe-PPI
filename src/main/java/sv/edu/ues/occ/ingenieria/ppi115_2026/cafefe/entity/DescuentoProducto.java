@@ -9,7 +9,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
@@ -20,6 +19,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  *
@@ -39,9 +39,8 @@ public class DescuentoProducto implements Serializable {
     @Id
     @Basic(optional = false)
     @NotNull
-    @Lob
     @Column(name = "id_descuento_producto")
-    private Object idDescuentoProducto;
+    private UUID idDescuentoProducto;
     @Column(name = "fecha_desde")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaDesde;
@@ -63,15 +62,15 @@ public class DescuentoProducto implements Serializable {
     public DescuentoProducto() {
     }
 
-    public DescuentoProducto(Object idDescuentoProducto) {
+    public DescuentoProducto(UUID idDescuentoProducto) {
         this.idDescuentoProducto = idDescuentoProducto;
     }
 
-    public Object getIdDescuentoProducto() {
+    public UUID getIdDescuentoProducto() {
         return idDescuentoProducto;
     }
 
-    public void setIdDescuentoProducto(Object idDescuentoProducto) {
+    public void setIdDescuentoProducto(UUID idDescuentoProducto) {
         this.idDescuentoProducto = idDescuentoProducto;
     }
 

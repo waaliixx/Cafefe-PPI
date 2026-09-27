@@ -8,7 +8,6 @@ import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
@@ -17,6 +16,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.UUID;
 
 /**
  *
@@ -35,9 +35,8 @@ public class Caja implements Serializable {
     @Id
     @Basic(optional = false)
     @NotNull
-    @Lob
     @Column(name = "id_caja")
-    private Object idCaja;
+    private UUID idCaja;
     @Size(max = 155)
     @Column(name = "nombre")
     private String nombre;
@@ -52,15 +51,15 @@ public class Caja implements Serializable {
     public Caja() {
     }
 
-    public Caja(Object idCaja) {
+    public Caja(UUID idCaja) {
         this.idCaja = idCaja;
     }
 
-    public Object getIdCaja() {
+    public UUID getIdCaja() {
         return idCaja;
     }
 
-    public void setIdCaja(Object idCaja) {
+    public void setIdCaja(UUID idCaja) {
         this.idCaja = idCaja;
     }
 
