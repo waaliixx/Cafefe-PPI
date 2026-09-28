@@ -1,0 +1,71 @@
+package sv.edu.ues.occ.ingenieria.ppi115_2026.cafefe.dao;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
+import sv.edu.ues.occ.ingenieria.ppi115_2026.cafefe.entity.TipoDescuento;
+
+/**
+ *
+ * @author edenrvm
+ */
+
+public class TipoDescuentoDAO extends AbstraccionDAO<TipoDescuento> implements Serializable {
+
+    @PersistenceContext(unitName = "cafefePU")
+    private EntityManager em;
+
+    public TipoDescuentoDAO() {
+        super(TipoDescuento.class);
+    }
+
+    @Override
+    protected EntityManager getEntityManager() {
+        return em;
+    }
+
+    public List<TipoDescuento> findByNombre(String nombre) {
+        if (nombre == null || getEntityManager() == null) {
+            return Collections.emptyList();
+        }
+        try {
+            TypedQuery<TipoDescuento> query = getEntityManager().createNamedQuery("TipoDescuento.findByNombre", TipoDescuento.class);
+            query.setParameter("nombre", nombre);
+            return query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+
+    public List<TipoDescuento> findByActivo(Boolean activo) {
+        if (activo == null || getEntityManager() == null) {
+            return Collections.emptyList();
+        }
+        try {
+            TypedQuery<TipoDescuento> query = getEntityManager().createNamedQuery("TipoDescuento.findByActivo", TipoDescuento.class);
+            query.setParameter("activo", activo);
+            return query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+
+    public List<TipoDescuento> findByDescuentoMaximo(Integer descuentoMaximo) {
+        if (descuentoMaximo == null || getEntityManager() == null) {
+            return Collections.emptyList();
+        }
+        try {
+            TypedQuery<TipoDescuento> query = getEntityManager().createNamedQuery("TipoDescuento.findByDescuentoMaximo", TipoDescuento.class);
+            query.setParameter("descuentoMaximo", descuentoMaximo);
+            return query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+}
