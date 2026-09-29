@@ -10,13 +10,40 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jakartaee>11.0.0-M1</jakartaee>
+        <primefaces.version>15.0.17</primefaces.version>
     </properties>
     
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>6.1.3</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-bom</artifactId>
+                <version>5.23.0</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    
     <dependencies>
+        <!-- JakartaEE API-->
         <dependency>
             <groupId>jakarta.platform</groupId>
             <artifactId>jakarta.jakartaee-api</artifactId>
             <version>${jakartaee}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>6.0.0</version>
             <scope>provided</scope>
         </dependency>
         
@@ -31,7 +58,9 @@
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
-            <version>16.0.0</version>
+            <version>${primefaces.version}</version>
+            <classifier>jakarta</classifier>
+            <scope>provided</scope>
         </dependency>
         
         <!-- Testing JUnit 5 -->
@@ -56,7 +85,6 @@
             <version>5.23.0</version>
             <scope>test</scope>
         </dependency>
-        
     </dependencies>
     
     <build>
@@ -70,24 +98,24 @@
                     <release>21</release>
                 </configuration>
             </plugin>
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.4.0</version>
             </plugin>
+            
             <plugin>
                 <groupId>io.openliberty.tools</groupId>
                 <artifactId>liberty-maven-plugin</artifactId>
                 <version>3.12.0</version>
                 <configuration>
+                    <installDirectory>/usr/local/openliberty/wlp_26.0.0.9</installDirectory>
+                    <serverXmlFile>/usr/local/openliberty/wlp_26.0.0.9/usr/servers/pos_ppi115_2026/server.xml</serverXmlFile>
                     <serverName>pos_ppi115_2026</serverName>
-                    <features>
-                        <feature>jakartaee-11.0</feature>
-                    </features>
-                    <appsDirectory>dropins</appsDirectory>
-                    <stripVersion>true</stripVersion>
                 </configuration>
             </plugin>
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
@@ -101,6 +129,7 @@
                     </execution>
                 </executions>
             </plugin>
+            
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
