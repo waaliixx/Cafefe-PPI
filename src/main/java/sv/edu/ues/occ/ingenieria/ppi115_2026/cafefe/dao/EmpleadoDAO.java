@@ -1,5 +1,6 @@
 package sv.edu.ues.occ.ingenieria.ppi115_2026.cafefe.dao;
 
+import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
@@ -12,7 +13,7 @@ import sv.edu.ues.occ.ingenieria.ppi115_2026.cafefe.entity.Empleado;
  *
  * @author edenrvm
  */
-
+@Stateless
 public class EmpleadoDAO extends AbstraccionDAO<Empleado> implements Serializable {
 
     @PersistenceContext(unitName = "cafefePU")
