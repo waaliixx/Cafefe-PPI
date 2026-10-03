@@ -13,7 +13,6 @@ import sv.edu.ues.occ.ingenieria.ppi115_2026.cafefe.entity.EmpleadoRol;
  *
  * @author edenrvm
  */
-
 @Stateless
 public class EmpleadoRolDAO extends AbstraccionDAO<EmpleadoRol> implements Serializable {
 
@@ -43,4 +42,15 @@ public class EmpleadoRolDAO extends AbstraccionDAO<EmpleadoRol> implements Seria
             return Collections.emptyList();
         }
     }
+
+    public long contarPorRol(UUID idRol) {
+        if (idRol == null) {
+            return 0;
+        }
+        return em.createQuery(
+                "SELECT COUNT(er) FROM EmpleadoRol er WHERE er.idRol.idRol = :id", Long.class)
+                .setParameter("id", idRol)
+                .getSingleResult();
+    }
+
 }

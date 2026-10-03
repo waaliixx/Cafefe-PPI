@@ -16,7 +16,6 @@
 
             <p:panel header="Gestión de Empleados">
 
-                <!-- ================= Listado: barra de acciones + tabla ================= -->
                 <h:panelGroup rendered="#{!empleadoModel.mostrarFormulario}">
 
                     <p:toolbar id="barra" style="margin-bottom: 15px;">
@@ -70,6 +69,11 @@
                         <p:ajax event="rowSelect" update=":frmEmpleado:barra" />
                         <p:ajax event="rowUnselect" update=":frmEmpleado:barra" />
 
+
+                        <p:column headerText="ID" style="width: 280px;">
+                            <h:outputText value="#{item.idEmpleado}" />
+                        </p:column>
+
                         <p:column headerText="Nombre">
                             <h:outputText value="#{item.nombre}" />
                         </p:column>
@@ -93,7 +97,6 @@
                     </p:dataTable>
                 </h:panelGroup>
 
-                <!-- ================= Formulario con TabView ================= -->
                 <p:panel header="#{empleadoModel.creando ? 'Nuevo Empleado' : 'Editar Empleado'}"
                          rendered="#{empleadoModel.mostrarFormulario}">
 

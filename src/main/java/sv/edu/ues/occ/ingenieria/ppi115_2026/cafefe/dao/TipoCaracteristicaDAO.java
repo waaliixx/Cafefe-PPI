@@ -13,6 +13,7 @@ import sv.edu.ues.occ.ingenieria.ppi115_2026.cafefe.entity.TipoCaracteristica;
  *
  * @author edenrvm
  */
+
 @Stateless
 public class TipoCaracteristicaDAO extends AbstraccionDAO<TipoCaracteristica> implements Serializable {
 
