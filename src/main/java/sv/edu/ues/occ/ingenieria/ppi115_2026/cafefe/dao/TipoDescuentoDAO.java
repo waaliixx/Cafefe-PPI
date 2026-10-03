@@ -28,6 +28,18 @@ public class TipoDescuentoDAO extends AbstraccionDAO<TipoDescuento> implements S
         return em;
     }
 
+    @Override
+    public List<TipoDescuento> findRange(int[] range) {
+        if (range == null || range.length < 2 || range[0] < 0 || range[1] <= range[0]) {
+            return Collections.emptyList();
+        }
+        return em.createQuery("SELECT t FROM TipoDescuento t ORDER BY t.nombre, t.idTipoDescuento",
+                TipoDescuento.class)
+                .setFirstResult(range[0])
+                .setMaxResults(range[1] - range[0])
+                .getResultList();
+    }
+
     public List<TipoDescuento> findByNombre(String nombre) {
         if (nombre == null || getEntityManager() == null) {
             return Collections.emptyList();

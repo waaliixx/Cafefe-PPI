@@ -21,8 +21,24 @@
                             <h:graphicImage library="imagenes" name="cafefelogo.jpeg" style="max-height:160px; width:auto;" />
                         </ui:insert>
                     </div>
-                    <div class="ui-g-8" style="text-align:center;">
+                    <div class="ui-g-6" style="text-align:center;">
                         <h2><ui:insert name="titulo_pagina">Cafefe</ui:insert></h2>
+                    </div>
+                    <div class="ui-g-2">
+                        <ui:insert name="idioma">
+                            <h:form>
+                                <p:growl>
+                                    <p:autoUpdate/>
+                                </p:growl>
+                                <p:panelMenu style="width:105%">
+                                    <p:submenu label="Idioma">
+                                        <p:menuitem value="Español" ajax="true"/>
+                                        <p:menuitem value="Ingles"/>
+                                        <p:menuitem value="Chino"/>
+                                    </p:submenu>
+                                </p:panelMenu>
+                            </h:form>
+                        </ui:insert>
                     </div>
                 </div>
             </div>

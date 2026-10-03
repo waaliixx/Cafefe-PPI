@@ -1,8 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="jakarta.faces.facelets"
+                xmlns:h="jakarta.faces.html"
+                xmlns:p="http://primefaces.org/ui"
                 template="/WEB-INF/templates/plantilla.xhtml">
+    <ui:define name="titulo_pagina">Tipo de Descuento</ui:define>
     <ui:define name="contenido">
-        <h2>Página en construcción</h2>
+        <h:form id="frmTipoDescuento">
+            <p:growl id="messages" showDetail="true" life="5000" />
+            <p:panel header="Tipos de Descuento">
+                <h:panelGroup rendered="#{tdModel.listado}" layout="block">
+                    <p:toolbar id="barra" style="margin-bottom: 15px;">
+                        <p:toolbarGroup>
+                            <p:commandButton value="Nuevo tipo de descuento" icon="pi pi-plus"
+                                             action="#{tdModel.nuevo}" process="@this"
+                                             update="@form" resetValues="true" styleClass="ui-button-success" />
+                        </p:toolbarGroup>
+                        <p:toolbarGroup align="right">
+                            <p:commandButton value="Editar" icon="pi pi-pencil"
+                                             action="#{tdModel.modificarSeleccionado}" process="@this"
+                                             update="@form" resetValues="true"
+                                             disabled="#{tdModel.seleccionado == null}"
+                                             styleClass="ui-button-warning"
+                                             style="margin-right: 8px;"/>
+                            <p:commandButton value="Eliminar" icon="pi pi-trash"
+                                             action="#{tdModel.eliminarSeleccionado}" process="@this"
+                                             update="@form" disabled="#{tdModel.seleccionado == null}"
+                                             styleClass="ui-button-danger">
+                                <p:confirm header="Eliminar tipo de descuento"
+                                           message="¿Desea eliminar el tipo de descuento seleccionado?"
+                                           icon="pi pi-exclamation-triangle" />
+                            </p:commandButton>
+                        </p:toolbarGroup>
+                    </p:toolbar>
+                    <p:dataTable id="tablaTiposDescuento" value="#{tdModel.registrosLazy}"
+                                 var="item" lazy="true" selectionMode="single"
+                                 selection="#{tdModel.seleccionado}" rowKey="#{item.idTipoDescuento}"
+                                 paginator="true" rows="10"
+                                 emptyMessage="Sin tipos de descuento registrados.">
+                        <p:ajax event="rowSelect" update=":frmTipoDescuento:barra" />
+                        <p:ajax event="rowUnselect" update=":frmTipoDescuento:barra" />
+                        <p:ajax event="page" listener="#{tdModel.cancelar}" update=":frmTipoDescuento:barra" />
+                        <p:column headerText="ID">
+                            <h:outputText value="#{item.idTipoDescuento}" />
+
+                        </p:column>
+                        <p:column headerText="Nombre">
+                            <h:outputText value="#{item.nombre}" />
+                        </p:column>
+                        <p:column headerText="Descuento máximo">
+                            <h:outputText value="#{item.descuentoMaximo}" />
+                        </p:column>
+                        <p:column headerText="Estado" style="text-align: center; width: 100px;">
+                            <p:tag value="#{item.activo ? 'ACTIVO' : 'INACTIVO'}"
+                                   severity="#{item.activo ? 'success' : 'danger'}" />
+                        </p:column>
+                        <p:column headerText="Observaciones">
+                            <h:outputText value="#{item.observaciones}" />
+                        </p:column>
+                    </p:dataTable>
+                </h:panelGroup>
+                <h:panelGroup id="formulario" rendered="#{tdModel.mostrarFormulario}" layout="block">
+                    <h3><h:outputText value="#{tdModel.creando ? 'Crear tipo de descuento' : 'Modificar tipo de descuento'}" /></h3>
+                    <p:panelGrid columns="2" layout="grid">
+                        <p:outputLabel for="nombre" value="Nombre" />
+                        <p:inputText id="nombre" value="#{tdModel.registro.nombre}" required="true"
+                                     requiredMessage="El nombre es obligatorio." />
+                        <p:outputLabel for="descuentoMaximo" value="Descuento máximo" />
+                        <p:inputNumber id="descuentoMaximo" value="#{tdModel.registro.descuentoMaximo}"
+                                       required="true" requiredMessage="El descuento máximo es obligatorio"
+                                       decimalPlaces="0" minValue="0" maxValue="100" />
+                        <p:outputLabel for="activo" value="Activo" />
+                        <p:selectBooleanCheckbox id="activo" value="#{tdModel.registro.activo}" />
+                        <p:outputLabel for="observaciones" value="Observaciones" />
+                        <p:inputTextarea id="observaciones" value="#{tdModel.registro.observaciones}" />
+                    </p:panelGrid>
+                    <p:commandButton value="Guardar" icon="pi pi-save" action="#{tdModel.guardar}"
+                                     process="@form" update="@form" styleClass="ui-button-success" />
+                    <p:commandButton value="Cancelar" action="#{tdModel.cancelar}"
+                                     process="@this" update="@form" resetValues="true"
+                                     styleClass="ui-button-secondary" />
+                </h:panelGroup>
+            </p:panel>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Cancelar" type="button"
+                                 styleClass="ui-confirmdialog-no ui-button-secondary" />
+                <p:commandButton value="Eliminar" type="button" icon="pi pi-trash"
+                                 styleClass="ui-confirmdialog-yes ui-button-danger" />
+            </p:confirmDialog>
+        </h:form>
     </ui:define>
 </ui:composition>
