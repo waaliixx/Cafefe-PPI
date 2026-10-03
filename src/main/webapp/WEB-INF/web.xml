@@ -20,5 +20,14 @@
     <session-config>
         <session-timeout>30</session-timeout>
     </session-config>
+    
+    <context-param>
+        <param-name>jakarta.faces.PROJECT_STAGE</param-name>
+        <param-value>Development</param-value>
+    </context-param>
+    <context-param>
+        <param-name>javax.faces.FACELETS_REFRESH_PERIOD</param-name>
+        <param-value>0</param-value>
+    </context-param>
 
 </web-app>

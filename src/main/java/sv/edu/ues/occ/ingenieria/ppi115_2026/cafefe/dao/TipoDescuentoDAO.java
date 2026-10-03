@@ -16,7 +16,7 @@ import sv.edu.ues.occ.ingenieria.ppi115_2026.cafefe.entity.TipoDescuento;
 @Stateless
 public class TipoDescuentoDAO extends AbstraccionDAO<TipoDescuento> implements Serializable {
 
-    @PersistenceContext(unitName = "cafefePU")
+    @PersistenceContext(unitName = "CafefePU")
     private EntityManager em;
 
     public TipoDescuentoDAO() {

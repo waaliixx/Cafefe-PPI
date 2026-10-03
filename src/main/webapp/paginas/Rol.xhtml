@@ -7,86 +7,112 @@
                 template="/WEB-INF/templates/plantilla.xhtml">
 
     <ui:define name="titulo_pagina">
-        Roles
+        Gestión de Roles
     </ui:define>
 
     <ui:define name="contenido">
         <h:form id="frmRol">
-            <p:growl id="messages" showDetail="true" />
+            <p:growl id="messages" showDetail="true" life="4000" />
 
-            <!-- Contenedor AJAX principal para refrescar sin destruir el <form> -->
-            <h:panelGroup id="pnlRol" layout="block">
-                
-                <p:panel header="Gestión de Roles del Sistema">
-                    
-                    <!-- Botón para Iniciar Creación -->
-                    <h:panelGroup style="margin-bottom: 15px; display: block;" rendered="#{!rolModel.mostrarFormulario}">
-                        <p:commandButton value="Nuevo Rol" actionListener="#{rolModel.nuevo()}" 
-                                         process="@this" update="pnlRol" icon="pi pi-plus" styleClass="ui-button-success" />
-                    </h:panelGroup>
+            <p:panel header="Gestión de Roles del Sistema">
 
-                    <!-- Formulario de Entrada (Se muestra cuando estado != NINGUNO) -->
-                    <p:panel header="Datos del Rol" rendered="#{rolModel.mostrarFormulario}" style="margin-bottom: 20px;">
-                        <p:panelGrid columns="2" styleClass="ui-panelgrid-blank">
-                            
-                            <p:outputLabel for="nombre" value="Nombre del Rol:" />
-                            <p:inputText id="nombre" value="#{rolModel.registro.nombre}" required="true" 
-                                         placeholder="Ej: cajero, camarero, barista" />
+                <!-- Botón Nuevo -->
+                <h:panelGroup style="margin-bottom: 15px; display: block;"
+                              rendered="#{!rolModel.mostrarFormulario}">
+                    <p:commandButton value="Nuevo Rol"
+                                     actionListener="#{rolModel.nuevo()}"
+                                     process="@this"
+                                     update="@form"
+                                     icon="pi pi-plus"
+                                     styleClass="ui-button-success" />
+                </h:panelGroup>
 
-                            <p:outputLabel for="activo" value="Activo:" />
-                            <p:selectBooleanCheckbox id="activo" value="#{rolModel.registro.activo}" />
+                <!-- Formulario -->
+                <p:panel id="panelFormulario" header="Datos del Rol"
+                         rendered="#{rolModel.mostrarFormulario}"
+                         style="margin-bottom: 20px;">
 
-                            <p:outputLabel for="descripcion" value="Descripción:" />
-                            <p:inputTextarea id="descripcion" value="#{rolModel.registro.descripcion}" rows="3" cols="30" />
+                    <p:panelGrid columns="2" styleClass="ui-panelgrid-blank">
 
-                        </p:panelGrid>
+                        <p:outputLabel for="nombre" value="Nombre del Rol:" />
+                        <p:inputText id="nombre" value="#{rolModel.registro.nombre}"
+                                     required="true"
+                                     requiredMessage="El nombre del rol es obligatorio"
+                                     placeholder="Ej: cajero, camarero, barista" />
 
-                        <div style="margin-top: 15px;">
-                            <p:commandButton value="Guardar" actionListener="#{rolModel.guardar()}" 
-                                             update="pnlRol" icon="pi pi-check" style="margin-right: 10px;" />
-                            <p:commandButton value="Cancelar" actionListener="#{rolModel.cancelar()}" 
-                                             update="pnlRol" icon="pi pi-times" process="@this" styleClass="ui-button-secondary" />
-                        </div>
-                    </p:panel>
+                        <p:outputLabel for="activo" value="Activo:" />
+                        <p:selectBooleanCheckbox id="activo" value="#{rolModel.registro.activo}" />
 
-                    <!-- Tabla de Registros -->
-                    <p:dataTable id="tablaRoles" value="#{rolModel.registros}" var="item" 
-                                 paginator="true" rows="10" reflow="true" emptyMessage="Sin registros previos.">
-                        
-                        <p:column headerText="ID Rol" style="width: 280px;">
-                            <h:outputText value="#{item.idRol}" />
-                        </p:column>
+                        <p:outputLabel for="descripcion" value="Descripción:" />
+                        <p:inputTextarea id="descripcion" value="#{rolModel.registro.observaciones}"
+                                         rows="3" cols="30" />
+                    </p:panelGrid>
 
-                        <p:column headerText="Nombre">
-                            <h:outputText value="#{item.nombre}" />
-                        </p:column>
-
-                        <p:column headerText="Estado" style="text-align: center; width: 100px;">
-                            <p:tag value="#{item.activo ? 'ACTIVO' : 'INACTIVO'}" 
-                                   severity="#{item.activo ? 'success' : 'danger'}" />
-                        </p:column>
-
-                        <p:column headerText="Descripción">
-                            <h:outputText value="#{item.descripcion}" />
-                        </p:column>
-
-                        <p:column headerText="Acciones" style="text-align: center; width: 120px;">
-                            <p:commandButton icon="pi pi-pencil" actionListener="#{rolModel.editar(item)}" 
-                                             update=":frmRol:pnlRol" process="@this" styleClass="ui-button-warning ui-button-flat" />
-                            <p:commandButton icon="pi pi-trash" actionListener="#{rolModel.eliminar(item)}" 
-                                             update=":frmRol:pnlRol" process="@this" styleClass="ui-button-danger ui-button-flat" style="margin-left: 5px;">
-                                <p:confirm header="Confirmación" message="¿Desea eliminar este rol?" icon="pi pi-exclamation-triangle" />
-                            </p:commandButton>
-                        </p:column>
-                    </p:dataTable>
+                    <div style="margin-top: 15px;">
+                        <p:commandButton value="Guardar"
+                                         actionListener="#{rolModel.guardar()}"
+                                         process="@form"
+                                         update="@form"
+                                         icon="pi pi-check"
+                                         style="margin-right: 10px;" />
+                        <p:commandButton value="Cancelar"
+                                         actionListener="#{rolModel.cancelar()}"
+                                         process="@this"
+                                         update="@form"
+                                         immediate="true"
+                                         icon="pi pi-times"
+                                         styleClass="ui-button-secondary" />
+                    </div>
                 </p:panel>
 
-            </h:panelGroup>
+                <!-- Tabla -->
+                <p:dataTable id="tablaRoles" value="#{rolModel.registros}" var="item"
+                             paginator="true" rows="10" reflow="true"
+                             emptyMessage="Sin registros previos.">
 
-            <!-- Diálogo Global de Confirmación -->
-            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
-                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-flat"/>
-                <p:commandButton value="Sí" type="button" styleClass="ui-confirmdialog-yes" />
+                    <p:column headerText="ID Rol" style="width: 280px;">
+                        <h:outputText value="#{item.idRol}" />
+                    </p:column>
+
+                    <p:column headerText="Nombre">
+                        <h:outputText value="#{item.nombre}" />
+                    </p:column>
+
+                    <p:column headerText="Estado" style="text-align: center; width: 100px;">
+                        <p:tag value="#{item.activo ? 'ACTIVO' : 'INACTIVO'}"
+                               severity="#{item.activo ? 'success' : 'danger'}" />
+                    </p:column>
+
+                    <p:column headerText="Descripción">
+                        <h:outputText value="#{item.observaciones}" />
+                    </p:column>
+
+                    <p:column headerText="Acciones" style="text-align: center; width: 120px;">
+                        <p:commandButton icon="pi pi-pencil"
+                                         actionListener="#{rolModel.editar(item)}"
+                                         process="@this"
+                                         update="@form"
+                                         styleClass="ui-button-warning ui-button-flat" />
+                        <p:commandButton icon="pi pi-trash"
+                                         actionListener="#{rolModel.eliminar(item)}"
+                                         process="@this"
+                                         update="@form"
+                                         styleClass="ui-button-danger ui-button-flat"
+                                         style="margin-left: 5px;">
+                            <p:confirm header="Confirmación"
+                                       message="¿Desea eliminar este rol?"
+                                       icon="pi pi-exclamation-triangle" />
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </p:panel>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+                             responsive="true" width="350">
+                <p:commandButton value="No" type="button"
+                                 styleClass="ui-confirmdialog-no ui-button-flat" />
+                <p:commandButton value="Sí" type="button"
+                                 styleClass="ui-confirmdialog-yes" />
             </p:confirmDialog>
         </h:form>
     </ui:define>
