@@ -17,7 +17,7 @@ import sv.edu.ues.occ.ingenieria.ppi115_2026.cafefe.entity.Factura;
 @Stateless
 public class FacturaDAO extends AbstraccionDAO<Factura> implements Serializable {
 
-    @PersistenceContext(unitName = "cafefePU")
+    @PersistenceContext(unitName = "CafefePU")
     private EntityManager em;
 
     public FacturaDAO() {

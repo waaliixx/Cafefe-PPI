@@ -1,8 +1,172 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
                 xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
                 template="/WEB-INF/templates/plantilla.xhtml">
+
+    <ui:define name="titulo_pagina">
+        Empleados
+    </ui:define>
+
     <ui:define name="contenido">
-        <h2>Página en construcción</h2>
+        <h:form id="frmEmpleado">
+            <p:growl id="messages" showDetail="true" life="5000" />
+
+            <p:panel header="Gestión de Empleados">
+
+                <!-- ================= Listado: barra de acciones + tabla ================= -->
+                <h:panelGroup rendered="#{!empleadoModel.mostrarFormulario}">
+
+                    <p:toolbar id="barra" style="margin-bottom: 15px;">
+                        <p:toolbarGroup>
+                            <p:commandButton value="Nuevo Empleado"
+                                             actionListener="#{empleadoModel.nuevo()}"
+                                             process="@this"
+                                             update="@form"
+                                             icon="pi pi-plus"
+                                             styleClass="ui-button-success" />
+                        </p:toolbarGroup>
+
+                        <p:toolbarGroup align="right">
+                            <h:outputText rendered="#{empleadoModel.seleccionado != null}"
+                                          value="Seleccionado: #{empleadoModel.seleccionado.nombre} #{empleadoModel.seleccionado.apellido}"
+                                          style="margin-right: 15px; font-weight: 600;" />
+                            <h:outputText rendered="#{empleadoModel.seleccionado == null}"
+                                          value="Seleccione un empleado de la tabla para editarlo o eliminarlo"
+                                          style="margin-right: 15px; color: #6b7280;" />
+
+                            <p:commandButton value="Editar"
+                                             actionListener="#{empleadoModel.editar(empleadoModel.seleccionado)}"
+                                             process="@this"
+                                             update="@form"
+                                             disabled="#{empleadoModel.seleccionado == null}"
+                                             icon="pi pi-pencil"
+                                             styleClass="ui-button-warning"
+                                             style="margin-right: 8px;" />
+
+                            <p:commandButton value="Eliminar"
+                                             actionListener="#{empleadoModel.eliminar(empleadoModel.seleccionado)}"
+                                             process="@this"
+                                             update="@form"
+                                             disabled="#{empleadoModel.seleccionado == null}"
+                                             icon="pi pi-trash"
+                                             styleClass="ui-button-danger">
+                                <p:confirm header="Confirmación"
+                                           message="¿Desea eliminar este empleado?"
+                                           icon="pi pi-exclamation-triangle" />
+                            </p:commandButton>
+                        </p:toolbarGroup>
+                    </p:toolbar>
+
+                    <p:dataTable id="tablaEmpleados" value="#{empleadoModel.registros}" var="item"
+                                 selectionMode="single"
+                                 selection="#{empleadoModel.seleccionado}"
+                                 rowKey="#{item.idEmpleado}"
+                                 paginator="true" rows="10"
+                                 emptyMessage="Sin registros previos.">
+
+                        <p:ajax event="rowSelect" update=":frmEmpleado:barra" />
+                        <p:ajax event="rowUnselect" update=":frmEmpleado:barra" />
+
+                        <p:column headerText="Nombre">
+                            <h:outputText value="#{item.nombre}" />
+                        </p:column>
+
+                        <p:column headerText="Apellido">
+                            <h:outputText value="#{item.apellido}" />
+                        </p:column>
+
+                        <p:column headerText="Rol">
+                            <h:outputText value="#{empleadoModel.getRolTexto(item)}" />
+                        </p:column>
+
+                        <p:column headerText="Estado" style="text-align: center; width: 100px;">
+                            <p:tag value="#{item.activo ? 'ACTIVO' : 'INACTIVO'}"
+                                   severity="#{item.activo ? 'success' : 'danger'}" />
+                        </p:column>
+
+                        <p:column headerText="Comentarios">
+                            <h:outputText value="#{item.comentarios}" />
+                        </p:column>
+                    </p:dataTable>
+                </h:panelGroup>
+
+                <!-- ================= Formulario con TabView ================= -->
+                <p:panel header="#{empleadoModel.creando ? 'Nuevo Empleado' : 'Editar Empleado'}"
+                         rendered="#{empleadoModel.mostrarFormulario}">
+
+                    <p:tabView id="tabsEmpleado">
+
+                        <p:tab title="Empleado">
+                            <p:panelGrid columns="2" styleClass="ui-panelgrid-blank">
+                                <p:outputLabel for="nombre" value="Nombre:" />
+                                <p:inputText id="nombre" value="#{empleadoModel.registro.nombre}"
+                                             required="true"
+                                             requiredMessage="El nombre es obligatorio"
+                                             maxlength="255" />
+
+                                <p:outputLabel for="apellido" value="Apellido:" />
+                                <p:inputText id="apellido" value="#{empleadoModel.registro.apellido}"
+                                             required="true"
+                                             requiredMessage="El apellido es obligatorio"
+                                             maxlength="255" />
+
+                                <p:outputLabel for="activo" value="Activo:" />
+                                <p:selectBooleanCheckbox id="activo"
+                                                         value="#{empleadoModel.registro.activo}" />
+
+                                <p:outputLabel for="comentarios" value="Comentarios:" />
+                                <p:inputTextarea id="comentarios"
+                                                 value="#{empleadoModel.registro.comentarios}"
+                                                 rows="3" cols="30" />
+                            </p:panelGrid>
+                        </p:tab>
+
+                        <p:tab title="Roles">
+                            <p style="margin-top: 0; color: #6b7280;">
+                                Un empleado solo puede tener un rol, y debe estar activo.
+                            </p>
+                            <p:panelGrid columns="2" styleClass="ui-panelgrid-blank">
+                                <p:outputLabel for="rol" value="Rol:" />
+                                <p:selectOneMenu id="rol" value="#{empleadoModel.idRolSeleccionado}"
+                                                 style="min-width: 260px;">
+                                    <f:selectItem itemLabel="-- Sin rol --" itemValue=""
+                                                  noSelectionOption="true" />
+                                    <f:selectItems value="#{empleadoModel.rolesDisponibles}" var="r"
+                                                   itemLabel="#{r.nombre}#{r.activo ? '' : ' (INACTIVO)'}"
+                                                   itemValue="#{r.idRol.toString()}" />
+                                </p:selectOneMenu>
+                            </p:panelGrid>
+                        </p:tab>
+                    </p:tabView>
+
+                    <div style="margin-top: 15px;">
+                        <p:commandButton value="Guardar"
+                                         actionListener="#{empleadoModel.guardar()}"
+                                         process="@form"
+                                         update="@form"
+                                         icon="pi pi-check"
+                                         style="margin-right: 10px;" />
+                        <p:commandButton value="Cancelar"
+                                         actionListener="#{empleadoModel.cancelar()}"
+                                         process="@this"
+                                         update="@form"
+                                         immediate="true"
+                                         icon="pi pi-times"
+                                         styleClass="ui-button-secondary" />
+                    </div>
+                </p:panel>
+            </p:panel>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+                             responsive="true" width="350">
+                <p:commandButton value="No" type="button"
+                                 styleClass="ui-confirmdialog-no ui-button-flat" />
+                <p:commandButton value="Sí" type="button"
+                                 styleClass="ui-confirmdialog-yes" />
+            </p:confirmDialog>
+        </h:form>
     </ui:define>
 </ui:composition>

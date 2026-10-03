@@ -1,0 +1,46 @@
+package sv.edu.ues.occ.ingenieria.ppi115_2026.cafefe.dao;
+
+import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+import sv.edu.ues.occ.ingenieria.ppi115_2026.cafefe.entity.EmpleadoRol;
+
+/**
+ *
+ * @author edenrvm
+ */
+
+@Stateless
+public class EmpleadoRolDAO extends AbstraccionDAO<EmpleadoRol> implements Serializable {
+
+    @PersistenceContext(unitName = "CafefePU")
+    private EntityManager em;
+
+    public EmpleadoRolDAO() {
+        super(EmpleadoRol.class);
+    }
+
+    @Override
+    protected EntityManager getEntityManager() {
+        return em;
+    }
+
+    public List<EmpleadoRol> findByEmpleado(UUID idEmpleado) {
+        if (idEmpleado == null || em == null) {
+            return Collections.emptyList();
+        }
+        try {
+            return em.createQuery(
+                    "SELECT er FROM EmpleadoRol er WHERE er.idEmpleado = :id", EmpleadoRol.class)
+                    .setParameter("id", idEmpleado)
+                    .getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+}

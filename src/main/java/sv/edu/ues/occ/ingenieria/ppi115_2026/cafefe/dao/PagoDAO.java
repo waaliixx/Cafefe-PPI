@@ -17,7 +17,7 @@ import sv.edu.ues.occ.ingenieria.ppi115_2026.cafefe.entity.Pago;
 @Stateless
 public class PagoDAO extends AbstraccionDAO<Pago> implements Serializable {
 
-    @PersistenceContext(unitName = "cafefePU")
+    @PersistenceContext(unitName = "CafefePU")
     private EntityManager em;
 
     public PagoDAO() {
