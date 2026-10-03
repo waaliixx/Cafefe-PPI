@@ -102,8 +102,7 @@
                         <p:inputText id="nombre" value="#{tipoCaracteristicaModel.registro.nombre}"
                                      required="true"
                                      requiredMessage="El nombre es obligatorio"
-                                     maxlength="155"
-                                     placeholder="Ej: Numérico, Texto, Teléfono" />
+                                     maxlength="155"/>
 
                         <p:outputLabel for="activo" value="Activo:" />
                         <p:selectBooleanCheckbox id="activo"
@@ -114,8 +113,7 @@
                                      value="#{tipoCaracteristicaModel.registro.expresionRegular}"
                                      required="true"
                                      requiredMessage="La expresión regular es obligatoria"
-                                     style="font-family: monospace; width: 100%; min-width: 300px;"
-                                     placeholder="Ej: [0-9]+" />
+                                     style="font-family: monospace; width: 100%; min-width: 300px;"/>
 
                         <p:outputLabel for="observaciones" value="Observaciones:" />
                         <p:inputTextarea id="observaciones"

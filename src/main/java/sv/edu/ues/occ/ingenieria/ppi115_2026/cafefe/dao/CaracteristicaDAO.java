@@ -7,6 +7,7 @@ import jakarta.persistence.TypedQuery;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import sv.edu.ues.occ.ingenieria.ppi115_2026.cafefe.entity.Caracteristica;
 import sv.edu.ues.occ.ingenieria.ppi115_2026.cafefe.entity.TipoCaracteristica;
 
@@ -73,4 +74,15 @@ public class CaracteristicaDAO extends AbstraccionDAO<Caracteristica> implements
             return Collections.emptyList();
         }
     }
+    
+    public long contarPorTipo(UUID idTipoCaracteristica) {
+    if (idTipoCaracteristica == null) {
+        return 0;
+    }
+    return em.createQuery(
+            "SELECT COUNT(c) FROM Caracteristica c "
+            + "WHERE c.idTipoCaracteristica.idTipoCaracteristica = :id", Long.class)
+            .setParameter("id", idTipoCaracteristica)
+            .getSingleResult();
+}
 }
