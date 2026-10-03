@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <title><ui:insert name="titulo"><h:outputText value="Cafefe"/></ui:insert></title>
+        <h:outputStylesheet library="css" name="estilos.css" />
+    </h:head>
+
+    <h:body>
+        <div class="ui-g" style="margin:0;">
+
+            <div class="ui-g-12 cabecera-app" style="padding:0;">
+                <div class="ui-g" style="align-items: center;">
+                    <div class="ui-g-4">
+                        <ui:insert name="logo">
+                            <h:graphicImage library="imagenes" name="cafefelogo.jpeg" style="max-height:160px; width:auto;" />
+                        </ui:insert>
+                    </div>
+                    <div class="ui-g-8" style="text-align:center;">
+                        <h2><ui:insert name="titulo_pagina">Cafefe</ui:insert></h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ui-g-12" style="padding:0;">
+                <div class="ui-g">
+                    <div class="ui-g-2">
+                        <ui:insert name="menu">
+                            <p:menu styleClass="menu-lateral" style="width:100%;">
+                                <p:submenu label="Menú">
+                                    <p:menuitem value="Roles" icon="pi pi-id-card" outcome="/paginas/Rol.xhtml"
+                                                styleClass="#{facesContext.viewRoot.viewId == '/paginas/Rol.xhtml' ? 'activo' : ''}"/>
+                                    <p:menuitem value="Empleados" icon="pi pi-user" outcome="/paginas/Empleado.xhtml"
+                                                styleClass="#{facesContext.viewRoot.viewId == '/paginas/Empleado.xhtml' ? 'activo' : ''}"/>
+                                    <p:menuitem value="Tipos de Característica" icon="pi pi-list" outcome="/paginas/TipoCaracteristica.xhtml"
+                                                styleClass="#{facesContext.viewRoot.viewId == '/paginas/TipoCaracteristica.xhtml' ? 'activo' : ''}"/>
+                                    <p:menuitem value="Características" icon="pi pi-sliders-h" outcome="/paginas/Caracteristica.xhtml"
+                                                styleClass="#{facesContext.viewRoot.viewId == '/paginas/Caracteristica.xhtml' ? 'activo' : ''}"/>
+                                    <p:menuitem value="Tipos de Descuento" icon="pi pi-percentage" outcome="/paginas/TipoDescuento.xhtml"
+                                                styleClass="#{facesContext.viewRoot.viewId == '/paginas/TipoDescuento.xhtml' ? 'activo' : ''}"/>
+                                    <p:menuitem value="Descuentos" icon="pi pi-ticket" outcome="/paginas/Descuento.xhtml"
+                                                styleClass="#{facesContext.viewRoot.viewId == '/paginas/Descuento.xhtml' ? 'activo' : ''}"/>
+                                    <p:menuitem value="Tipos de Producto" icon="pi pi-th-large" outcome="/paginas/TipoProducto.xhtml"
+                                                styleClass="#{facesContext.viewRoot.viewId == '/paginas/TipoProducto.xhtml' ? 'activo' : ''}"/>
+                                    <p:menuitem value="Productos" icon="pi pi-box" outcome="/paginas/Producto.xhtml"
+                                                styleClass="#{facesContext.viewRoot.viewId == '/paginas/Producto.xhtml' ? 'activo' : ''}"/>
+                                </p:submenu>
+
+                                <p:submenu label="Ventas">
+                                    <p:menuitem value="Órdenes" icon="pi pi-file" outcome="/paginas/Orden.xhtml"
+                                                styleClass="#{facesContext.viewRoot.viewId == '/paginas/Orden.xhtml' ? 'activo' : ''}"/>
+                                </p:submenu>
+                            </p:menu>
+                        </ui:insert>
+                    </div>
+
+                    <div class="ui-g-10">
+                        <ui:insert name="contenido">
+                            <h3>Contenido por defecto</h3>
+                        </ui:insert>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ui-g-12" style="padding:10px; text-align:center;">
+                <hr/>
+                <ui:insert name="pie">
+                    Cafefe - PPI115 2026 GT01
+                </ui:insert>
+            </div>
+
+        </div>
+    </h:body>
+</html>

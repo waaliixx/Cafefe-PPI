@@ -16,7 +16,7 @@ import sv.edu.ues.occ.ingenieria.ppi115_2026.cafefe.entity.Caja;
 @Stateless
 public class CajaDAO extends AbstraccionDAO<Caja> implements Serializable {
 
-    @PersistenceContext(unitName = "cafefePU")
+    @PersistenceContext(unitName = "CafefePU")
     private EntityManager em;
 
     public CajaDAO() {

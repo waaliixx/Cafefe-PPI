@@ -1,0 +1,85 @@
+:root {
+    --cafe-oscuro: #4b2e1e;
+    --cafe-medio: #8b5a3c;
+    --cafe-claro: #f5ebe0;
+    --cafe-crema: #fffaf4;
+}
+
+html, body {
+    margin: 0;
+    min-height: 100%;
+    background: var(--cafe-crema);
+}
+
+.app-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.cabecera-app {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 0.5rem 1.5rem;
+    background: var(--cafe-oscuro);
+    color: #fff;
+    border-bottom: 4px solid var(--cafe-medio);
+}
+
+.cabecera-logo img {
+    display: block;
+    max-height: 110px;
+    width: auto;
+    border-radius: 6px;
+}
+
+.cabecera-titulo {
+    margin: 0;
+    font-size: 1.9rem;
+    text-align: center;
+    color: #fff;
+}
+
+.app-cuerpo {
+    flex: 1;
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    align-items: flex-start;
+}
+
+.app-menu {
+    flex: 0 0 260px;
+}
+
+.app-contenido {
+    flex: 1;
+    min-width: 0;   
+}
+
+.menu-lateral {
+    width: 100%;
+    border: 1px solid var(--cafe-claro);
+    border-radius: 8px;
+}
+
+.menu-lateral .ui-menuitem.activo .ui-menuitem-link {
+    background: var(--cafe-claro);
+    border-left: 4px solid var(--cafe-medio);
+}
+
+.menu-lateral .ui-menuitem.activo .ui-menuitem-text,
+.menu-lateral .ui-menuitem.activo .ui-menuitem-icon {
+    color: var(--cafe-oscuro);
+    font-weight: 600;
+}
+
+.pie-app {
+    padding: 0.8rem;
+    text-align: center;
+    background: var(--cafe-claro);
+    color: var(--cafe-oscuro);
+    font-size: 0.9rem;
+}
+

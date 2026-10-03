@@ -16,7 +16,7 @@ import sv.edu.ues.occ.ingenieria.ppi115_2026.cafefe.entity.Rol;
 @Stateless
 public class RolDAO extends AbstraccionDAO<Rol> implements Serializable {
 
-    @PersistenceContext(unitName = "cafefePU")
+    @PersistenceContext(unitName = "CafefePU")
     private EntityManager em;
 
     public RolDAO() {

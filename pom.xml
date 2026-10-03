@@ -60,7 +60,6 @@
             <artifactId>primefaces</artifactId>
             <version>${primefaces.version}</version>
             <classifier>jakarta</classifier>
-            <scope>provided</scope>
         </dependency>
         
         <!-- Testing JUnit 5 -->
