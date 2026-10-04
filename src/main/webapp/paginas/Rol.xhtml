@@ -14,7 +14,7 @@
         <h:form id="frmRol">
             <p:growl id="messages" showDetail="true" life="4000" />
 
-            <p:panel header="Gestión de Roles del Sistema">
+            <p:panel header="Roles">
 
                 <h:panelGroup rendered="#{!rolModel.mostrarFormulario}">
 
@@ -92,6 +92,11 @@
                          rendered="#{rolModel.mostrarFormulario}">
 
                     <p:panelGrid columns="2" styleClass="ui-panelgrid-blank">
+                        <p:outputLabel for="id" value="ID:" />
+                        <p:inputText id="id" value="#{rolModel.registro.idRol}"
+                                     disabled="true"
+                                     style="width: 100%; min-width: 320px;" />
+
                         <p:outputLabel for="nombre" value="Nombre del Rol:" />
                         <p:inputText id="nombre" value="#{rolModel.registro.nombre}"
                                      required="true"
@@ -107,12 +112,9 @@
                     </p:panelGrid>
 
                     <div style="margin-top: 15px;">
-                        <p:commandButton value="Guardar"
-                                         actionListener="#{rolModel.guardar()}"
-                                         process="@form"
-                                         update="@form"
-                                         icon="pi pi-check"
-                                         style="margin-right: 10px;" />
+                        <p:commandButton value="Guardar" icon="pi pi-save" action="#{rolModel.guardar}"
+                                         process="@form" update="@form" styleClass="ui-button-success" 
+                                         style="margin-right: 8px;"/>
                         <p:commandButton value="Cancelar"
                                          actionListener="#{rolModel.cancelar()}"
                                          process="@this"

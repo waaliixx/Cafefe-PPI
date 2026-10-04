@@ -14,7 +14,7 @@
         <h:form id="frmEmpleado">
             <p:growl id="messages" showDetail="true" life="5000" />
 
-            <p:panel header="Gestión de Empleados">
+            <p:panel header="Empleados">
 
                 <h:panelGroup rendered="#{!empleadoModel.mostrarFormulario}">
 
@@ -104,6 +104,11 @@
 
                         <p:tab title="Empleado">
                             <p:panelGrid columns="2" styleClass="ui-panelgrid-blank">
+                                <p:outputLabel for="id" value="ID:" />
+                                <p:inputText id="id" value="#{empleadoModel.registro.idEmpleado}"
+                                             disabled="true"
+                                             style="width: 100%; min-width: 320px;" />
+
                                 <p:outputLabel for="nombre" value="Nombre:" />
                                 <p:inputText id="nombre" value="#{empleadoModel.registro.nombre}"
                                              required="true"
@@ -128,9 +133,7 @@
                         </p:tab>
 
                         <p:tab title="Roles">
-                            <p style="margin-top: 0; color: #6b7280;">
-                                Un empleado solo puede tener un rol, y debe estar activo.
-                            </p>
+                            <p style="margin-top: 0; color: #6b7280;"/>
                             <p:panelGrid columns="2" styleClass="ui-panelgrid-blank">
                                 <p:outputLabel for="rol" value="Rol:" />
                                 <p:selectOneMenu id="rol" value="#{empleadoModel.idRolSeleccionado}"
@@ -146,12 +149,9 @@
                     </p:tabView>
 
                     <div style="margin-top: 15px;">
-                        <p:commandButton value="Guardar"
-                                         actionListener="#{empleadoModel.guardar()}"
-                                         process="@form"
-                                         update="@form"
-                                         icon="pi pi-check"
-                                         style="margin-right: 10px;" />
+                        <p:commandButton value="Guardar" icon="pi pi-save" action="#{empleadoModel.guardar}"
+                                         process="@form" update="@form" styleClass="ui-button-success" 
+                                         style="margin-right: 8px;"/>
                         <p:commandButton value="Cancelar"
                                          actionListener="#{empleadoModel.cancelar()}"
                                          process="@this"

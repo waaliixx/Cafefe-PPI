@@ -12,11 +12,17 @@
                 <h:panelGroup rendered="#{tpModel.listado}" layout="block">
                     <p:toolbar id="barra" style="margin-bottom: 15px;">
                         <p:toolbarGroup>
-                            <p:commandButton value="Nuevo tipo de producto" icon="pi pi-plus"
+                            <p:commandButton value="Nuevo Tipo de Producto" icon="pi pi-plus"
                                              action="#{tpModel.nuevo}" process="@this"
                                              update="@form" resetValues="true" styleClass="ui-button-success" />
                         </p:toolbarGroup>
                         <p:toolbarGroup align="right">
+                            <h:outputText rendered="#{tpModel.seleccionado != null}"
+                                          value="Seleccionado: #{tpModel.seleccionado.nombre}"
+                                          style="margin-right: 15px; font-weight: 600;" />
+                            <h:outputText rendered="#{tpModel.seleccionado == null}"
+                                          value="Seleccione un tipo de producto de la tabla para editarlo o eliminarlo"
+                                          style="margin-right: 15px; color: #6b7280;" />
                             <p:commandButton value="Editar" icon="pi pi-pencil"
                                              action="#{tpModel.modificarSeleccionado}" process="@this"
                                              update="@form" resetValues="true"
@@ -74,8 +80,12 @@
                     <p:commandButton value="Guardar" icon="pi pi-save" action="#{tpModel.guardar}"
                                      process="@form" update="@form" styleClass="ui-button-success" 
                                      style="margin-right: 8px;"/>
-                    <p:commandButton value="Cancelar" action="#{tpModel.cancelar}"
-                                     process="@this" update="@form" resetValues="true"
+                    <p:commandButton value="Cancelar"
+                                     actionListener="#{tipoCaracteristicaModel.cancelar()}"
+                                     process="@this"
+                                     update="@form"
+                                     immediate="true"
+                                     icon="pi pi-times"
                                      styleClass="ui-button-secondary" />
                 </h:panelGroup>
             </p:panel>

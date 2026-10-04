@@ -14,9 +14,8 @@
         <h:form id="frmCaracteristica">
             <p:growl id="messages" showDetail="true" life="5000" />
 
-            <p:panel header="Gestión de Características">
+            <p:panel header="Características">
 
-                <!-- ================= Listado: barra de acciones + tabla ================= -->
                 <h:panelGroup rendered="#{!caracteristicaModel.mostrarFormulario}">
 
                     <p:toolbar id="barra" style="margin-bottom: 15px;">
@@ -102,6 +101,10 @@
                          rendered="#{caracteristicaModel.mostrarFormulario}">
 
                     <p:panelGrid columns="2" styleClass="ui-panelgrid-blank">
+                        <p:outputLabel for="id" value="ID:" />
+                        <p:inputText id="id" value="#{caracteristicaModel.registro.idCaracteristica}"
+                                     disabled="true"
+                                     style="width: 100%; min-width: 320px;" />
 
                         <p:outputLabel for="nombre" value="Nombre:" />
                         <p:inputText id="nombre" value="#{caracteristicaModel.registro.nombre}"
@@ -130,12 +133,9 @@
                     </p:panelGrid>
 
                     <div style="margin-top: 15px;">
-                        <p:commandButton value="Guardar"
-                                         actionListener="#{caracteristicaModel.guardar()}"
-                                         process="@form"
-                                         update="@form"
-                                         icon="pi pi-check"
-                                         style="margin-right: 10px;" />
+                        <p:commandButton value="Guardar" icon="pi pi-save" action="#{caracteristicaModel.guardar}"
+                                         process="@form" update="@form" styleClass="ui-button-success" 
+                                         style="margin-right: 8px;"/>
                         <p:commandButton value="Cancelar"
                                          actionListener="#{caracteristicaModel.cancelar()}"
                                          process="@this"
