@@ -76,7 +76,8 @@
                         <p:inputTextarea id="observaciones" value="#{tdModel.registro.observaciones}" />
                     </p:panelGrid>
                     <p:commandButton value="Guardar" icon="pi pi-save" action="#{tdModel.guardar}"
-                                     process="@form" update="@form" styleClass="ui-button-success" />
+                                     process="@form" update="@form" styleClass="ui-button-success" 
+                                     style="margin-right: 8px;"/>
                     <p:commandButton value="Cancelar" action="#{tdModel.cancelar}"
                                      process="@this" update="@form" resetValues="true"
                                      styleClass="ui-button-secondary" />

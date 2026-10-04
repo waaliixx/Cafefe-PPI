@@ -1,8 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="jakarta.faces.facelets"
+                xmlns:h="jakarta.faces.html"
+                xmlns:p="http://primefaces.org/ui"
                 template="/WEB-INF/templates/plantilla.xhtml">
+    <ui:define name="titulo_pagina">Tipo de Producto</ui:define>
     <ui:define name="contenido">
-        <h2>Página en construcción</h2>
+        <h:form id="frmTipoProducto">
+            <p:growl id="messages" showDetail="true" life="5000" />
+            <p:panel header="Tipos de Producto">
+                <h:panelGroup rendered="#{tpModel.listado}" layout="block">
+                    <p:toolbar id="barra" style="margin-bottom: 15px;">
+                        <p:toolbarGroup>
+                            <p:commandButton value="Nuevo tipo de producto" icon="pi pi-plus"
+                                             action="#{tpModel.nuevo}" process="@this"
+                                             update="@form" resetValues="true" styleClass="ui-button-success" />
+                        </p:toolbarGroup>
+                        <p:toolbarGroup align="right">
+                            <p:commandButton value="Editar" icon="pi pi-pencil"
+                                             action="#{tpModel.modificarSeleccionado}" process="@this"
+                                             update="@form" resetValues="true"
+                                             disabled="#{tpModel.seleccionado == null}"
+                                             styleClass="ui-button-warning"
+                                             style="margin-right: 8px;"/>
+                            <p:commandButton value="Eliminar" icon="pi pi-trash"
+                                             action="#{tpModel.eliminarSeleccionado}" process="@this"
+                                             update="@form" disabled="#{tpModel.seleccionado == null}"
+                                             styleClass="ui-button-danger">
+                                <p:confirm header="Eliminar tipo de producto"
+                                           message="¿Desea eliminar el tipo de producto seleccionado?"
+                                           icon="pi pi-exclamation-triangle" />
+                            </p:commandButton>
+                        </p:toolbarGroup>
+                    </p:toolbar>
+                    <p:dataTable id="tablaTiposProducto" value="#{tpModel.registrosLazy}"
+                                 var="item" lazy="true" selectionMode="single"
+                                 selection="#{tpModel.seleccionado}" rowKey="#{item.idTipoProducto}"
+                                 paginator="true" rows="10"
+                                 emptyMessage="Sin tipos de producto registrados.">
+                        <p:ajax event="rowSelect" update=":frmTipoProducto:barra" />
+                        <p:ajax event="rowUnselect" update=":frmTipoProducto:barra" />
+                        <p:ajax event="page" listener="#{tpModel.cancelar}" update=":frmTipoProducto:barra" />
+                        <p:column headerText="ID">
+                            <h:outputText value="#{item.idTipoProducto}" />
+
+                        </p:column>
+                        <p:column headerText="Nombre">
+                            <h:outputText value="#{item.nombre}" />
+                        </p:column>
+                        <p:column headerText="Estado" style="text-align: center; width: 100px;">
+                            <p:tag value="#{item.activo ? 'ACTIVO' : 'INACTIVO'}"
+                                   severity="#{item.activo ? 'success' : 'danger'}" />
+                        </p:column>
+                        <p:column headerText="Observaciones">
+                            <h:outputText value="#{item.observaciones}" />
+                        </p:column>
+                    </p:dataTable>
+                </h:panelGroup>
+                <h:panelGroup id="formulario" rendered="#{tpModel.mostrarFormulario}" layout="block">
+                    <h3><h:outputText value="#{tpModel.creando ? 'Crear tipo de producto' : 'Modificar tipo de producto'}" /></h3>
+                    <p:panelGrid columns="2" layout="grid">
+                        <p:outputLabel for="id" value="ID" />
+                        <p:inputText id="id" value="#{tpModel.registro.idTipoProducto}" maxlength="300" required="false"
+                                     disabled="true"/>
+                        <p:outputLabel for="nombre" value="Nombre" />
+                        <p:inputText id="nombre" value="#{tpModel.registro.nombre}" maxlength="155" required="true"
+                                     requiredMessage="El nombre es obligatorio." />
+                        <p:outputLabel for="activo" value="Activo" />
+                        <p:selectBooleanCheckbox id="activo" value="#{tpModel.registro.activo}" />
+                        <p:outputLabel for="observaciones" value="Observaciones" />
+                        <p:inputTextarea id="observaciones" value="#{tpModel.registro.observaciones}" />
+                    </p:panelGrid>
+                    <p:commandButton value="Guardar" icon="pi pi-save" action="#{tpModel.guardar}"
+                                     process="@form" update="@form" styleClass="ui-button-success" 
+                                     style="margin-right: 8px;"/>
+                    <p:commandButton value="Cancelar" action="#{tpModel.cancelar}"
+                                     process="@this" update="@form" resetValues="true"
+                                     styleClass="ui-button-secondary" />
+                </h:panelGroup>
+            </p:panel>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Cancelar" type="button"
+                                 styleClass="ui-confirmdialog-no ui-button-secondary" />
+                <p:commandButton value="Eliminar" type="button" icon="pi pi-trash"
+                                 styleClass="ui-confirmdialog-yes ui-button-danger" />
+            </p:confirmDialog>
+        </h:form>
     </ui:define>
 </ui:composition>

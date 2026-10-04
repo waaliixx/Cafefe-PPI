@@ -72,8 +72,7 @@
                     <p:panelGrid columns="2" layout="grid">
                         <p:outputLabel for="id" value="ID" />
                         <p:inputText id="id" value="#{dmodel.registro.idDescuento}" maxlength="300" required="false"
-                                     disabled="true"
-                                     requiredMessage="El nombre es obligatorio." />
+                                     disabled="true"/>
                         <p:outputLabel for="nombre" value="Nombre" />
                         <p:inputText id="nombre" value="#{dmodel.registro.nombre}" maxlength="155" required="true"
                                      requiredMessage="El nombre es obligatorio." />
@@ -97,7 +96,8 @@
                         <p:inputTextarea id="observaciones" value="#{dmodel.registro.observaciones}" />
                     </p:panelGrid>
                     <p:commandButton value="Guardar" icon="pi pi-save" action="#{dmodel.guardar}"
-                                     process="@form" update="@form" styleClass="ui-button-success" />
+                                     process="@form" update="@form" styleClass="ui-button-success" 
+                                     style="margin-right: 8px;"/>
                     <p:commandButton value="Cancelar" action="#{dmodel.cancelar}"
                                      process="@this" update="@form" resetValues="true"
                                      styleClass="ui-button-secondary" />
