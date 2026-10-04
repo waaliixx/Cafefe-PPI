@@ -17,6 +17,7 @@ import java.util.Map;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortMeta;
+
 /**
  *
  * @author walixx
@@ -24,7 +25,7 @@ import org.primefaces.model.SortMeta;
 @Named("tpModel")
 @ViewScoped
 public class tipoProductoModel extends AbstraccionModel<TipoProducto> {
-    
+
     @Inject
     private TipoProductoDAO tipoProductoDAO;
 
@@ -130,7 +131,29 @@ public class tipoProductoModel extends AbstraccionModel<TipoProducto> {
             mostrarMensaje(FacesMessage.SEVERITY_ERROR, "El registro ya no existe o no se pudo recuperar.");
             return false;
         }
+        if (!validarDesactivacion(registro)) {
+            return false;
+        }
         registro.setNombre(registro.getNombre().trim());
+        return true;
+    }
+
+    private boolean validarDesactivacion(TipoProducto registro) {
+        if (!isEditando() || Boolean.TRUE.equals(registro.getActivo())) {
+            return true;
+        }
+        TipoProducto guardado = tipoProductoDAO.buscarPorId(registro.getIdTipoProducto());
+        if (guardado == null || !Boolean.TRUE.equals(guardado.getActivo())) {
+            return true;
+        }
+        long enUso = tipoProductoDAO.contarProductos(registro.getIdTipoProducto());
+        if (enUso > 0) {
+            mostrarMensaje(FacesMessage.SEVERITY_ERROR,
+                    "No se puede desactivar el tipo de producto \"" + registro.getNombre()
+                    + "\" porque tiene " + enUso
+                    + (enUso == 1 ? " producto asociado." : " productos asociados."));
+            return false;
+        }
         return true;
     }
 
