@@ -1,8 +1,151 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
                 xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
                 template="/WEB-INF/templates/plantilla.xhtml">
+
+    <ui:define name="titulo_pagina">
+        Tipos de Características
+    </ui:define>
+
     <ui:define name="contenido">
-        <h2>Página en construcción</h2>
+        <h:form id="frmTipoCaracteristica">
+            <p:growl id="messages" showDetail="true" life="5000" />
+
+            <p:panel header="Gestión de Tipos de Características">
+
+                <h:panelGroup rendered="#{!tipoCaracteristicaModel.mostrarFormulario}">
+
+                    <p:toolbar id="barra" style="margin-bottom: 15px;">
+                        <p:toolbarGroup>
+                            <p:commandButton value="Nuevo Tipo"
+                                             actionListener="#{tipoCaracteristicaModel.nuevo()}"
+                                             process="@this"
+                                             update="@form"
+                                             icon="pi pi-plus"
+                                             styleClass="ui-button-success" />
+                        </p:toolbarGroup>
+
+                        <p:toolbarGroup align="right">
+                            <h:outputText rendered="#{tipoCaracteristicaModel.seleccionado != null}"
+                                          value="Seleccionado: #{tipoCaracteristicaModel.seleccionado.nombre}"
+                                          style="margin-right: 15px; font-weight: 600;" />
+                            <h:outputText rendered="#{tipoCaracteristicaModel.seleccionado == null}"
+                                          value="Seleccione un tipo de la tabla para editarlo o eliminarlo"
+                                          style="margin-right: 15px; color: #6b7280;" />
+
+                            <p:commandButton value="Editar"
+                                             actionListener="#{tipoCaracteristicaModel.editar(tipoCaracteristicaModel.seleccionado)}"
+                                             process="@this"
+                                             update="@form"
+                                             disabled="#{tipoCaracteristicaModel.seleccionado == null}"
+                                             icon="pi pi-pencil"
+                                             styleClass="ui-button-warning"
+                                             style="margin-right: 8px;" />
+
+                            <p:commandButton value="Eliminar"
+                                             actionListener="#{tipoCaracteristicaModel.eliminar(tipoCaracteristicaModel.seleccionado)}"
+                                             process="@this"
+                                             update="@form"
+                                             disabled="#{tipoCaracteristicaModel.seleccionado == null}"
+                                             icon="pi pi-trash"
+                                             styleClass="ui-button-danger">
+                                <p:confirm header="Confirmación"
+                                           message="¿Desea eliminar este tipo de característica?"
+                                           icon="pi pi-exclamation-triangle" />
+                            </p:commandButton>
+                        </p:toolbarGroup>
+                    </p:toolbar>
+
+                    <p:dataTable id="tablaTipos" value="#{tipoCaracteristicaModel.registros}" var="item"
+                                 selectionMode="single"
+                                 selection="#{tipoCaracteristicaModel.seleccionado}"
+                                 rowKey="#{item.idTipoCaracteristica}"
+                                 paginator="true" rows="10"
+                                 emptyMessage="Sin registros previos.">
+
+                        <p:ajax event="rowSelect" update=":frmTipoCaracteristica:barra" />
+                        <p:ajax event="rowUnselect" update=":frmTipoCaracteristica:barra" />
+
+                        <p:column headerText="ID" style="width: 280px;">
+                            <h:outputText value="#{item.idTipoCaracteristica}" />
+                        </p:column>
+
+                        <p:column headerText="Nombre">
+                            <h:outputText value="#{item.nombre}" />
+                        </p:column>
+
+                        <p:column headerText="Expresión regular">
+                            <h:outputText value="#{item.expresionRegular}"
+                                          style="font-family: monospace;" />
+                        </p:column>
+
+                        <p:column headerText="Estado" style="text-align: center; width: 100px;">
+                            <p:tag value="#{item.activo ? 'ACTIVO' : 'INACTIVO'}"
+                                   severity="#{item.activo ? 'success' : 'danger'}" />
+                        </p:column>
+
+                        <p:column headerText="Observaciones">
+                            <h:outputText value="#{item.observaciones}" />
+                        </p:column>
+                    </p:dataTable>
+                </h:panelGroup>
+
+                <p:panel header="#{tipoCaracteristicaModel.creando ? 'Nuevo Tipo de Característica' : 'Editar Tipo de Característica'}"
+                         rendered="#{tipoCaracteristicaModel.mostrarFormulario}">
+
+                    <p:panelGrid columns="2" styleClass="ui-panelgrid-blank">
+
+                        <p:outputLabel for="nombre" value="Nombre:" />
+                        <p:inputText id="nombre" value="#{tipoCaracteristicaModel.registro.nombre}"
+                                     required="true"
+                                     requiredMessage="El nombre es obligatorio"
+                                     maxlength="155"/>
+
+                        <p:outputLabel for="activo" value="Activo:" />
+                        <p:selectBooleanCheckbox id="activo"
+                                                 value="#{tipoCaracteristicaModel.registro.activo}" />
+
+                        <p:outputLabel for="expresion" value="Expresión regular:" />
+                        <p:inputText id="expresion"
+                                     value="#{tipoCaracteristicaModel.registro.expresionRegular}"
+                                     required="true"
+                                     requiredMessage="La expresión regular es obligatoria"
+                                     style="font-family: monospace; width: 100%; min-width: 300px;"/>
+
+                        <p:outputLabel for="observaciones" value="Observaciones:" />
+                        <p:inputTextarea id="observaciones"
+                                         value="#{tipoCaracteristicaModel.registro.observaciones}"
+                                         rows="3" cols="30" />
+                    </p:panelGrid>
+
+                    <div style="margin-top: 15px;">
+                        <p:commandButton value="Guardar"
+                                         actionListener="#{tipoCaracteristicaModel.guardar()}"
+                                         process="@form"
+                                         update="@form"
+                                         icon="pi pi-check"
+                                         style="margin-right: 10px;" />
+                        <p:commandButton value="Cancelar"
+                                         actionListener="#{tipoCaracteristicaModel.cancelar()}"
+                                         process="@this"
+                                         update="@form"
+                                         immediate="true"
+                                         icon="pi pi-times"
+                                         styleClass="ui-button-secondary" />
+                    </div>
+                </p:panel>
+            </p:panel>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+                             responsive="true" width="350">
+                <p:commandButton value="No" type="button"
+                                 styleClass="ui-confirmdialog-no ui-button-flat" />
+                <p:commandButton value="Sí" type="button"
+                                 styleClass="ui-confirmdialog-yes" />
+            </p:confirmDialog>
+        </h:form>
     </ui:define>
 </ui:composition>

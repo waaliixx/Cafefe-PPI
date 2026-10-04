@@ -1,8 +1,159 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
                 xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
                 template="/WEB-INF/templates/plantilla.xhtml">
+
+    <ui:define name="titulo_pagina">
+        Características
+    </ui:define>
+
     <ui:define name="contenido">
-        <h2>Página en construcción</h2>
+        <h:form id="frmCaracteristica">
+            <p:growl id="messages" showDetail="true" life="5000" />
+
+            <p:panel header="Gestión de Características">
+
+                <!-- ================= Listado: barra de acciones + tabla ================= -->
+                <h:panelGroup rendered="#{!caracteristicaModel.mostrarFormulario}">
+
+                    <p:toolbar id="barra" style="margin-bottom: 15px;">
+                        <p:toolbarGroup>
+                            <p:commandButton value="Nueva Característica"
+                                             actionListener="#{caracteristicaModel.nuevo()}"
+                                             process="@this"
+                                             update="@form"
+                                             icon="pi pi-plus"
+                                             styleClass="ui-button-success" />
+                        </p:toolbarGroup>
+
+                        <p:toolbarGroup align="right">
+                            <h:outputText rendered="#{caracteristicaModel.seleccionado != null}"
+                                          value="Seleccionada: #{caracteristicaModel.seleccionado.nombre}"
+                                          style="margin-right: 15px; font-weight: 600;" />
+                            <h:outputText rendered="#{caracteristicaModel.seleccionado == null}"
+                                          value="Seleccione una característica de la tabla para editarla o eliminarla"
+                                          style="margin-right: 15px; color: #6b7280;" />
+
+                            <p:commandButton value="Editar"
+                                             actionListener="#{caracteristicaModel.editar(caracteristicaModel.seleccionado)}"
+                                             process="@this"
+                                             update="@form"
+                                             disabled="#{caracteristicaModel.seleccionado == null}"
+                                             icon="pi pi-pencil"
+                                             styleClass="ui-button-warning"
+                                             style="margin-right: 8px;" />
+
+                            <p:commandButton value="Eliminar"
+                                             actionListener="#{caracteristicaModel.eliminar(caracteristicaModel.seleccionado)}"
+                                             process="@this"
+                                             update="@form"
+                                             disabled="#{caracteristicaModel.seleccionado == null}"
+                                             icon="pi pi-trash"
+                                             styleClass="ui-button-danger">
+                                <p:confirm header="Confirmación"
+                                           message="¿Desea eliminar esta característica?"
+                                           icon="pi pi-exclamation-triangle" />
+                            </p:commandButton>
+                        </p:toolbarGroup>
+                    </p:toolbar>
+
+                    <p:dataTable id="tablaCaracteristicas" value="#{caracteristicaModel.registros}" var="item"
+                                 selectionMode="single"
+                                 selection="#{caracteristicaModel.seleccionado}"
+                                 rowKey="#{item.idCaracteristica}"
+                                 paginator="true" rows="10"
+                                 emptyMessage="Sin registros previos.">
+
+                        <p:ajax event="rowSelect" update=":frmCaracteristica:barra" />
+                        <p:ajax event="rowUnselect" update=":frmCaracteristica:barra" />
+
+                        <p:column headerText="ID" style="width: 280px;">
+                            <h:outputText value="#{item.idCaracteristica}" />
+                        </p:column>
+
+                        <p:column headerText="Nombre">
+                            <h:outputText value="#{item.nombre}" />
+                        </p:column>
+
+                        <p:column headerText="Tipo">
+                            <h:outputText value="#{item.idTipoCaracteristica.nombre}" />
+                        </p:column>
+
+                        <p:column headerText="Expresión regular">
+                            <h:outputText value="#{item.idTipoCaracteristica.expresionRegular}"
+                                          style="font-family: monospace;" />
+                        </p:column>
+
+                        <p:column headerText="Estado" style="text-align: center; width: 100px;">
+                            <p:tag value="#{item.activo ? 'ACTIVO' : 'INACTIVO'}"
+                                   severity="#{item.activo ? 'success' : 'danger'}" />
+                        </p:column>
+
+                        <p:column headerText="Observaciones">
+                            <h:outputText value="#{item.observaciones}" />
+                        </p:column>
+                    </p:dataTable>
+                </h:panelGroup>
+
+                <p:panel header="#{caracteristicaModel.creando ? 'Nueva Característica' : 'Editar Característica'}"
+                         rendered="#{caracteristicaModel.mostrarFormulario}">
+
+                    <p:panelGrid columns="2" styleClass="ui-panelgrid-blank">
+
+                        <p:outputLabel for="nombre" value="Nombre:" />
+                        <p:inputText id="nombre" value="#{caracteristicaModel.registro.nombre}"
+                                     required="true"
+                                     requiredMessage="El nombre es obligatorio"
+                                     maxlength="155"/>
+
+                        <p:outputLabel for="tipo" value="Tipo de característica:" />
+                        <p:selectOneMenu id="tipo" value="#{caracteristicaModel.idTipoSeleccionado}"
+                                         style="min-width: 320px;">
+                            <f:selectItem itemLabel="-- Seleccione un tipo --" itemValue=""
+                                          noSelectionOption="true" />
+                            <f:selectItems value="#{caracteristicaModel.tiposDisponibles}" var="t"
+                                           itemLabel="#{t.nombre} (#{t.expresionRegular})#{t.activo ? '' : ' - INACTIVO'}"
+                                           itemValue="#{t.idTipoCaracteristica.toString()}" />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel for="activo" value="Activo:" />
+                        <p:selectBooleanCheckbox id="activo"
+                                                 value="#{caracteristicaModel.registro.activo}" />
+
+                        <p:outputLabel for="observaciones" value="Observaciones:" />
+                        <p:inputTextarea id="observaciones"
+                                         value="#{caracteristicaModel.registro.observaciones}"
+                                         rows="3" cols="30" />
+                    </p:panelGrid>
+
+                    <div style="margin-top: 15px;">
+                        <p:commandButton value="Guardar"
+                                         actionListener="#{caracteristicaModel.guardar()}"
+                                         process="@form"
+                                         update="@form"
+                                         icon="pi pi-check"
+                                         style="margin-right: 10px;" />
+                        <p:commandButton value="Cancelar"
+                                         actionListener="#{caracteristicaModel.cancelar()}"
+                                         process="@this"
+                                         update="@form"
+                                         immediate="true"
+                                         icon="pi pi-times"
+                                         styleClass="ui-button-secondary" />
+                    </div>
+                </p:panel>
+            </p:panel>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+                             responsive="true" width="350">
+                <p:commandButton value="No" type="button"
+                                 styleClass="ui-confirmdialog-no ui-button-flat" />
+                <p:commandButton value="Sí" type="button"
+                                 styleClass="ui-confirmdialog-yes" />
+            </p:confirmDialog>
+        </h:form>
     </ui:define>
 </ui:composition>
