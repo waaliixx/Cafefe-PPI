@@ -30,7 +30,10 @@
                             <h:outputText rendered="#{productoModel.seleccionado != null}"
                                           value="Seleccionado: #{productoModel.seleccionado.nombre}"
                                           style="margin-right: 15px; font-weight: 600;" />
-
+                            <h:outputText rendered="#{productoModel.seleccionado == null}"
+                                          value="Seleccione un producto de la tabla para editarlo o eliminarlo"
+                                          style="margin-right: 15px; color: #6b7280;" />
+                            
                             <p:commandButton value="Editar"
                                              actionListener="#{productoModel.editar(productoModel.seleccionado)}"
                                              process="@this" update="@form" resetValues="true"
@@ -96,7 +99,7 @@
                                 <p:inputText id="nombreProd" value="#{productoModel.registro.nombre}"
                                              maxlength="155" style="width: 100%; min-width: 320px;" />
 
-                                <p:outputLabel for="precioProd" value="Precio sugerido:" />
+                                <p:outputLabel for="precioProd" value="Precio:" />
                                 <p:autoComplete id="precioProd" widgetVar="acPrecio"
                                                 value="#{productoModel.registro.precioSugerido}"
                                                 completeMethod="#{productoModel.sugerirPrecios}"

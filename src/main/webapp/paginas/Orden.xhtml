@@ -1,8 +1,276 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
                 xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
                 template="/WEB-INF/templates/plantilla.xhtml">
+
+    <ui:define name="titulo_pagina">
+        Órdenes
+    </ui:define>
+
     <ui:define name="contenido">
-        <h2>Página en construcción</h2>
+        <h:form id="frmOrden">
+            <p:growl id="messages" showDetail="true" life="6000" />
+
+            <p:panel header="Órdenes">
+
+                <h:panelGroup rendered="#{!ordenModel.mostrarFormulario}">
+
+                    <p:toolbar id="barra" style="margin-bottom: 15px;">
+                        <p:toolbarGroup>
+                            <p:commandButton value="Nueva Orden"
+                                             actionListener="#{ordenModel.nuevo()}"
+                                             process="@this" update="@form" resetValues="true"
+                                             icon="pi pi-plus" styleClass="ui-button-success" />
+                        </p:toolbarGroup>
+
+                        <p:toolbarGroup align="right">
+                            <h:outputText rendered="#{ordenModel.seleccionado != null}"
+                                          value="Orden de #{ordenModel.empleoYNombre(ordenModel.seleccionado)}"
+                                          style="margin-right: 15px; font-weight: 600;" />
+                            <h:outputText rendered="#{ordenModel.seleccionado == null}"
+                                          value="Seleccione una orden de la tabla para agregar o eliminar"
+                                          style="margin-right: 15px; color: #6b7280;" />
+
+                            <p:commandButton value="Agregar Productos"
+                                             actionListener="#{ordenModel.editar(ordenModel.seleccionado)}"
+                                             process="@this" update="@form" resetValues="true"
+                                             disabled="#{ordenModel.seleccionado == null}"
+                                             icon="pi pi-plus" styleClass="ui-button-warning"
+                                             style="margin-right: 8px;" />
+
+                            <p:commandButton value="Eliminar"
+                                             actionListener="#{ordenModel.eliminar(ordenModel.seleccionado)}"
+                                             process="@this" update="@form"
+                                             disabled="#{ordenModel.seleccionado == null}"
+                                             icon="pi pi-trash" styleClass="ui-button-danger">
+                                <p:confirm header="Confirmación"
+                                           message="¿Desea eliminar esta orden y todos sus productos?"
+                                           icon="pi pi-exclamation-triangle" />
+                            </p:commandButton>
+                        </p:toolbarGroup>
+                    </p:toolbar>
+
+                    <p:dataTable id="tablaOrdenes" value="#{ordenModel.registros}" var="item"
+                                 selectionMode="single"
+                                 selection="#{ordenModel.seleccionado}"
+                                 rowKey="#{item.idOrden}"
+                                 paginator="true" rows="5"
+                                 emptyMessage="Sin órdenes registradas.">
+
+                        <p:ajax event="rowSelect" update=":frmOrden:barra" />
+                        <p:ajax event="rowUnselect" update=":frmOrden:barra" />
+
+                        <p:column headerText="ID" style="width: 280px;">
+                            <h:outputText value="#{item.idOrden}" />
+                        </p:column>
+                        <p:column headerText="Empleado">
+                            <h:outputText value="#{ordenModel.empleoYNombre(item)}" />
+                        </p:column>
+                        <p:column headerText="Fecha de orden" style="width: 170px;">
+                            <h:outputText value="#{item.fechaCreacion}">
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+                                                   timeZone="America/El_Salvador" />
+                            </h:outputText>
+                        </p:column>
+                    </p:dataTable>
+                </h:panelGroup>
+
+                <p:panel header="#{ordenModel.creando ? 'Nueva Orden' : 'Editar Orden'}"
+                         rendered="#{ordenModel.mostrarFormulario}">
+
+                    <p:tabView id="tabsOrden">
+
+                        <p:tab title="Generalidades">
+                            <p:panelGrid columns="2" styleClass="ui-panelgrid-blank">
+                                <p:outputLabel for="idOrd" value="ID:" />
+                                <p:inputText id="idOrd" value="#{ordenModel.registro.idOrden}"
+                                             disabled="true" style="width: 100%; min-width: 320px;" />
+
+                                <p:outputLabel for="camareroOrd" value="Empleado:" />
+                                <p:selectOneMenu id="camareroOrd" value="#{ordenModel.idEmpleadoRolElegido}"
+                                                 disabled="#{ordenModel.editando}"
+                                                 style="min-width: 320px;">
+                                    <f:selectItem itemLabel="-- Seleccione un empleado --"
+                                                  itemValue="" noSelectionOption="true" />
+                                    <f:selectItems value="#{ordenModel.camareros}" var="er"
+                                                   itemLabel="#{ordenModel.etiquetaCamarero(er)}"
+                                                   itemValue="#{er.idEmpleadoRol.toString()}" />
+                                </p:selectOneMenu>
+
+                                <p:outputLabel for="fechaOrd" value="Fecha de la Orden:" />
+                                <p:datePicker id="fechaOrd" value="#{ordenModel.registro.fechaCreacion}"
+                                              pattern="dd/MM/yyyy HH:mm" showTime="true" disabled="true" />
+                            </p:panelGrid>
+                        </p:tab>
+
+                        <p:tab title="Productos" disabled="#{ordenModel.creando}">
+
+                            <h:panelGroup rendered="#{!ordenModel.formProducto and !ordenModel.formDescuento}">
+                                <p:toolbar id="barraProductos" styleClass="barraProductos" style="margin-bottom: 15px;">
+                                    <p:toolbarGroup>
+                                        <p:commandButton value="Agregar Producto"
+                                                         actionListener="#{ordenModel.abrirFormProducto()}"
+                                                         process="@form" update="@form" resetValues="true"
+                                                         icon="pi pi-plus" styleClass="ui-button-success"
+                                                         style="margin-right: 8px;" />
+
+                                        <p:commandButton value="Aplicar descuento"
+                                                         rendered="#{ordenModel.productoSeleccionado != null}"
+                                                         actionListener="#{ordenModel.abrirFormDescuento(ordenModel.productoSeleccionado)}"
+                                                         process="@form" update="@form" resetValues="true"
+                                                         icon="pi pi-percentage" styleClass="ui-button-info" />
+                                    </p:toolbarGroup>
+
+                                    <p:toolbarGroup align="right">
+                                        <p:commandButton value="Quitar"
+                                                         actionListener="#{ordenModel.eliminarProducto()}"
+                                                         process="@form" update="@form"
+                                                         disabled="#{ordenModel.productoSeleccionado == null}"
+                                                         icon="pi pi-trash" styleClass="ui-button-danger">
+                                            <p:confirm header="Confirmación"
+                                                       message="¿Desea quitar este producto de la orden?"
+                                                       icon="pi pi-exclamation-triangle" />
+                                        </p:commandButton>
+                                    </p:toolbarGroup>
+                                </p:toolbar>
+
+                                <p:dataTable id="tablaProductosOrden" value="#{ordenModel.productosOrden}" var="op"
+                                             selectionMode="single"
+                                             selection="#{ordenModel.productoSeleccionado}"
+                                             rowKey="#{op.idOrdenProducto}"
+                                             paginator="true" rows="5"
+                                             emptyMessage="Esta orden aún no tiene productos.">
+                                    <p:ajax event="rowSelect" update="@(.barraProductos)" />
+                                    <p:ajax event="rowUnselect" update="@(.barraProductos)" />
+
+                                    <p:column headerText="ID" style="width: 280px;">
+                                        <h:outputText value="#{op.idOrdenProducto}" />
+                                    </p:column>
+                                    <p:column headerText="Producto">
+                                        <h:outputText value="#{op.idProducto.nombre}" />
+                                    </p:column>
+                                    <p:column headerText="Precio" style="text-align: right; width: 120px;">
+                                        <h:outputText value="#{op.precio}">
+                                            <f:convertNumber type="currency" currencySymbol="$" />
+                                        </h:outputText>
+                                    </p:column>
+                                    <p:column headerText="Observaciones">
+                                        <h:outputText value="#{op.observaciones}" />
+                                    </p:column>
+                                </p:dataTable>
+                            </h:panelGroup>
+
+                            <h:panelGroup rendered="#{ordenModel.formProducto}">
+                                <h4 style="margin-top: 0;">Agregar producto a la orden</h4>
+                                <p:panelGrid columns="2" styleClass="ui-panelgrid-blank">
+                                    <p:outputLabel for="idOrdProd" value="ID:" />
+                                    <p:inputText id="idOrdProd"
+                                                 value="#{ordenModel.nuevoProducto.idOrdenProducto}"
+                                                 disabled="true" style="width: 100%; min-width: 320px;" />
+
+                                    <p:outputLabel for="productoOrd" value="Producto:" />
+                                    <p:selectOneMenu id="productoOrd" value="#{ordenModel.idProductoElegido}"
+                                                     filter="true" filterMatchMode="contains"
+                                                     style="min-width: 320px;">
+                                        <f:selectItem itemLabel="-- Seleccione un producto --"
+                                                      itemValue="" noSelectionOption="true" />
+                                        <f:selectItems value="#{ordenModel.productosDisponibles}" var="pr"
+                                                       itemLabel="#{pr.nombre}#{pr.activo ? '' : ' (INACTIVO)'}"
+                                                       itemValue="#{pr.idProducto.toString()}"
+                                                       itemDisabled="#{!pr.activo}" />
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel for="obsOrdProd" value="Observaciones:" />
+                                    <p:inputTextarea id="obsOrdProd" value="#{ordenModel.nuevoProducto.observaciones}"
+                                                     rows="3" cols="40" />
+                                </p:panelGrid>
+
+                                <div style="margin-top: 15px;">
+                                    <p:commandButton value="Guardar"
+                                                     actionListener="#{ordenModel.guardarProducto()}"
+                                                     process="@form" update="@form"
+                                                     icon="pi pi-save" styleClass="ui-button-success"
+                                                     style="margin-right: 8px;" />
+                                    <p:commandButton value="Cancelar"
+                                                     actionListener="#{ordenModel.cerrarFormProducto()}"
+                                                     process="@form" update="@form" resetValues="true"
+                                                     icon="pi pi-times" styleClass="ui-button-secondary" />
+                                </div>
+                            </h:panelGroup>
+
+                            <h:panelGroup rendered="#{ordenModel.formDescuento}">
+                                <h4 style="margin-top: 0;">Aplicar descuento</h4>
+                                <p:panelGrid columns="2" styleClass="ui-panelgrid-blank">
+                                    <h:outputText value="Producto:" />
+                                    <h:outputText value="#{ordenModel.lineaConDescuento.idProducto.nombre}"
+                                                  style="font-weight: 600;" />
+
+                                    <h:outputText value="Precio actual:" />
+                                    <h:outputText value="#{ordenModel.lineaConDescuento.precio}"
+                                                  style="font-weight: 600;">
+                                        <f:convertNumber type="currency" currencySymbol="$" />
+                                    </h:outputText>
+
+                                    <p:outputLabel for="descOrd" value="Descuento:" />
+                                    <p:selectOneMenu id="descOrd" value="#{ordenModel.idDescuentoElegido}"
+                                                     style="min-width: 320px;">
+                                        <f:selectItem itemLabel="-- Seleccione un descuento --"
+                                                      itemValue="" noSelectionOption="true" />
+
+                                        <f:selectItems value="#{ordenModel.descuentosDisponibles}" var="d"
+                                                       itemLabel="#{ordenModel.etiquetaDescuento(d)}"
+                                                       itemValue="#{d.idDescuentoProducto.toString()}" />
+                                    </p:selectOneMenu>
+                                </p:panelGrid>
+
+                                <h:outputText rendered="#{empty ordenModel.descuentosDisponibles}"
+                                              value="Este producto no tiene descuentos asignados."
+                                              style="display: block; margin-top: 10px;" />
+
+                                <div style="margin-top: 15px;">
+                                    <p:commandButton value="Aplicar"
+                                                     actionListener="#{ordenModel.aplicarDescuento()}"
+                                                     process="@form" update="@form"
+                                                     disabled="#{empty ordenModel.descuentosDisponibles}"
+                                                     icon="pi pi-percentage" styleClass="ui-button-success"
+                                                     style="margin-right: 8px;" />
+                                    <p:commandButton value="Cerrar"
+                                                     actionListener="#{ordenModel.cerrarFormDescuento()}"
+                                                     process="@form" update="@form" resetValues="true"
+                                                     icon="pi pi-times" styleClass="ui-button-secondary" />
+                                </div>
+                            </h:panelGroup>
+                        </p:tab>
+                    </p:tabView>
+
+                    <div style="margin-top: 15px;" id="botonesOrden">
+                        <h:panelGroup rendered="#{!ordenModel.subFormularioAbierto}">
+                            <p:commandButton value="Guardar"
+                                             rendered="#{ordenModel.creando}"
+                                             actionListener="#{ordenModel.guardar()}"
+                                             process="@form" update="@form"
+                                             oncomplete="window.scrollTo(0, 0);"
+                                             icon="pi pi-save" styleClass="ui-button-success"
+                                             style="margin-right: 8px;" />
+                            <p:commandButton value="#{ordenModel.creando ? 'Cancelar' : 'Cerrar'}"
+                                             actionListener="#{ordenModel.cancelar()}"
+                                             process="@this" update="@form" immediate="true"
+                                             icon="pi pi-times" styleClass="ui-button-secondary" />
+                        </h:panelGroup>
+                    </div>
+                </p:panel>
+            </p:panel>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+                             responsive="true" width="350">
+                <p:commandButton value="No" type="button"
+                                 styleClass="ui-confirmdialog-no ui-button-flat" />
+                <p:commandButton value="Sí" type="button"
+                                 styleClass="ui-confirmdialog-yes" />
+            </p:confirmDialog>
+        </h:form>
     </ui:define>
 </ui:composition>

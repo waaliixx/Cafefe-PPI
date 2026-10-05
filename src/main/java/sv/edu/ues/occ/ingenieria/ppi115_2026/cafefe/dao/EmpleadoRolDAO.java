@@ -53,4 +53,21 @@ public class EmpleadoRolDAO extends AbstraccionDAO<EmpleadoRol> implements Seria
                 .getSingleResult();
     }
 
+    public List<EmpleadoRol> findActivosPorNombreRol(String nombreRol) {
+        if (nombreRol == null || nombreRol.isBlank() || em == null) {
+            return Collections.emptyList();
+        }
+        try {
+            return em.createQuery(
+                    "SELECT er FROM EmpleadoRol er "
+                    + "WHERE LOWER(er.idRol.nombre) = :nombre AND er.activo = :activo", EmpleadoRol.class)
+                    .setParameter("nombre", nombreRol.trim().toLowerCase())
+                    .setParameter("activo", Boolean.TRUE)
+                    .getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+
 }
