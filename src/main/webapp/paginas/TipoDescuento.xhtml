@@ -42,7 +42,7 @@
                     <p:dataTable id="tablaTiposDescuento" value="#{tdModel.registrosLazy}"
                                  var="item" lazy="true" selectionMode="single"
                                  selection="#{tdModel.seleccionado}" rowKey="#{item.idTipoDescuento}"
-                                 paginator="true" rows="10"
+                                 paginator="true" rows="5"
                                  emptyMessage="Sin tipos de descuento registrados.">
                         <p:ajax event="rowSelect" update=":frmTipoDescuento:barra" />
                         <p:ajax event="rowUnselect" update=":frmTipoDescuento:barra" />

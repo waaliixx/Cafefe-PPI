@@ -42,7 +42,7 @@
                     <p:dataTable id="tablaTiposProducto" value="#{tpModel.registrosLazy}"
                                  var="item" lazy="true" selectionMode="single"
                                  selection="#{tpModel.seleccionado}" rowKey="#{item.idTipoProducto}"
-                                 paginator="true" rows="10"
+                                 paginator="true" rows="5"
                                  emptyMessage="Sin tipos de producto registrados.">
                         <p:ajax event="rowSelect" update=":frmTipoProducto:barra" />
                         <p:ajax event="rowUnselect" update=":frmTipoProducto:barra" />

@@ -13,7 +13,7 @@
                 <h:panelGroup rendered="#{dmodel.listado}" layout="block">
                     <p:toolbar id="barra" style="margin-bottom: 15px;">
                         <p:toolbarGroup>
-                            <p:commandButton value="Nuevo descuento" icon="pi pi-plus"
+                            <p:commandButton value="Nuevo Descuento" icon="pi pi-plus"
                                              action="#{dmodel.nuevo}" process="@this"
                                              update="@form" resetValues="true" styleClass="ui-button-success" />
                         </p:toolbarGroup>
@@ -43,7 +43,7 @@
                     <p:dataTable id="tablaDescuentos" value="#{dmodel.registrosLazy}"
                                  var="item" lazy="true" selectionMode="single"
                                  selection="#{dmodel.seleccionado}" rowKey="#{item.idDescuento}"
-                                 paginator="true" rows="10"
+                                 paginator="true" rows="5"
                                  emptyMessage="Sin descuentos registrados.">
                         <p:ajax event="rowSelect" update=":frmDescuento:barra" />
                         <p:ajax event="rowUnselect" update=":frmDescuento:barra" />
