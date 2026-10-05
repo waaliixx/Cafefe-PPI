@@ -14,6 +14,7 @@ import sv.edu.ues.occ.ingenieria.ppi115_2026.cafefe.entity.Producto;
  *
  * @author edenrvm
  */
+
 @Stateless
 public class ProductoDAO extends AbstraccionDAO<Producto> implements Serializable {
 

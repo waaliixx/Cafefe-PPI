@@ -8,15 +8,21 @@
     <ui:define name="contenido">
         <h:form id="frmTipoDescuento">
             <p:growl id="messages" showDetail="true" life="5000" />
-            <p:panel header="Tipos de Descuento">
+            <p:panel header="Tipos de Descuentos">
                 <h:panelGroup rendered="#{tdModel.listado}" layout="block">
                     <p:toolbar id="barra" style="margin-bottom: 15px;">
                         <p:toolbarGroup>
-                            <p:commandButton value="Nuevo tipo de descuento" icon="pi pi-plus"
+                            <p:commandButton value="Nuevo Tipo de Descuento" icon="pi pi-plus"
                                              action="#{tdModel.nuevo}" process="@this"
                                              update="@form" resetValues="true" styleClass="ui-button-success" />
                         </p:toolbarGroup>
                         <p:toolbarGroup align="right">
+                            <h:outputText rendered="#{tdModel.seleccionado != null}"
+                                          value="Seleccionado: #{tdModel.seleccionado.nombre}"
+                                          style="margin-right: 15px; font-weight: 600;" />
+                            <h:outputText rendered="#{tdModel.seleccionado == null}"
+                                          value="Seleccione un tipo de descuento de la tabla para editarlo o eliminarlo"
+                                          style="margin-right: 15px; color: #6b7280;" />
                             <p:commandButton value="Editar" icon="pi pi-pencil"
                                              action="#{tdModel.modificarSeleccionado}" process="@this"
                                              update="@form" resetValues="true"
@@ -36,7 +42,7 @@
                     <p:dataTable id="tablaTiposDescuento" value="#{tdModel.registrosLazy}"
                                  var="item" lazy="true" selectionMode="single"
                                  selection="#{tdModel.seleccionado}" rowKey="#{item.idTipoDescuento}"
-                                 paginator="true" rows="10"
+                                 paginator="true" rows="5"
                                  emptyMessage="Sin tipos de descuento registrados.">
                         <p:ajax event="rowSelect" update=":frmTipoDescuento:barra" />
                         <p:ajax event="rowUnselect" update=":frmTipoDescuento:barra" />
@@ -63,6 +69,10 @@
                 <h:panelGroup id="formulario" rendered="#{tdModel.mostrarFormulario}" layout="block">
                     <h3><h:outputText value="#{tdModel.creando ? 'Crear tipo de descuento' : 'Modificar tipo de descuento'}" /></h3>
                     <p:panelGrid columns="2" layout="grid">
+                        <p:outputLabel for="id" value="ID:" />
+                        <p:inputText id="id" value="#{tdModel.registro.idTipoDescuento}"
+                                     disabled="true"
+                                     style="width: 100%; min-width: 320px;" />
                         <p:outputLabel for="nombre" value="Nombre" />
                         <p:inputText id="nombre" value="#{tdModel.registro.nombre}" required="true"
                                      requiredMessage="El nombre es obligatorio." />
@@ -78,8 +88,12 @@
                     <p:commandButton value="Guardar" icon="pi pi-save" action="#{tdModel.guardar}"
                                      process="@form" update="@form" styleClass="ui-button-success" 
                                      style="margin-right: 8px;"/>
-                    <p:commandButton value="Cancelar" action="#{tdModel.cancelar}"
-                                     process="@this" update="@form" resetValues="true"
+                    <p:commandButton value="Cancelar"
+                                     actionListener="#{tdModel.cancelar()}"
+                                     process="@this"
+                                     update="@form"
+                                     immediate="true"
+                                     icon="pi pi-times"
                                      styleClass="ui-button-secondary" />
                 </h:panelGroup>
             </p:panel>

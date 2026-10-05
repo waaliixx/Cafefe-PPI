@@ -17,6 +17,8 @@ import java.util.Map;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortMeta;
+import sv.edu.ues.occ.ingenieria.ppi115_2026.cafefe.dao.DescuentoDAO;
+
 /**
  *
  * @author walixx
@@ -24,9 +26,11 @@ import org.primefaces.model.SortMeta;
 @Named("tdModel")
 @ViewScoped
 public class TipoDescuentoModel extends AbstraccionModel<TipoDescuento> {
-    
+
     @Inject
     private TipoDescuentoDAO tipoDescuentoDAO;
+    @Inject
+    private DescuentoDAO descuentoDAO;
 
     private LazyDataModel<TipoDescuento> registrosLazy;
     private TipoDescuento seleccionado;
@@ -130,7 +134,29 @@ public class TipoDescuentoModel extends AbstraccionModel<TipoDescuento> {
             mostrarMensaje(FacesMessage.SEVERITY_ERROR, "El registro ya no existe o no se pudo recuperar.");
             return false;
         }
+        if (!validarDesactivacion(registro)) { 
+            return false;
+        }
         registro.setNombre(registro.getNombre().trim());
+        return true;
+    }
+
+    private boolean validarDesactivacion(TipoDescuento registro) {
+        if (!isEditando() || Boolean.TRUE.equals(registro.getActivo())) {
+            return true;
+        }
+        TipoDescuento guardado = tipoDescuentoDAO.buscarPorId(registro.getIdTipoDescuento());
+        if (guardado == null || !Boolean.TRUE.equals(guardado.getActivo())) {
+            return true;
+        }
+        long enUso = descuentoDAO.contarPorTipo(registro.getIdTipoDescuento());
+        if (enUso > 0) {
+            mostrarMensaje(FacesMessage.SEVERITY_ERROR,
+                    "No se puede desactivar el tipo de descuento \"" + registro.getNombre()
+                    + "\" porque tiene " + enUso
+                    + (enUso == 1 ? " descuento asociado." : " descuentos asociados."));
+            return false;
+        }
         return true;
     }
 

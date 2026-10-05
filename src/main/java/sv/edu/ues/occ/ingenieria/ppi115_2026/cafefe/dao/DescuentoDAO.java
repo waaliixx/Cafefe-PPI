@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import sv.edu.ues.occ.ingenieria.ppi115_2026.cafefe.entity.Descuento;
 
 /**
@@ -43,9 +44,6 @@ public class DescuentoDAO extends AbstraccionDAO<Descuento> implements Serializa
         }
     }
 
-    /**
-     * Busca descuentos que inician en una fecha específica.
-     */
     public List<Descuento> findByFechaDesde(Date fechaDesde) {
         if (fechaDesde == null || getEntityManager() == null) {
             return Collections.emptyList();
@@ -60,9 +58,6 @@ public class DescuentoDAO extends AbstraccionDAO<Descuento> implements Serializa
         }
     }
 
-    /**
-     * Busca descuentos que finalizan en una fecha específica.
-     */
     public List<Descuento> findByFechaHasta(Date fechaHasta) {
         if (fechaHasta == null || getEntityManager() == null) {
             return Collections.emptyList();
@@ -76,16 +71,16 @@ public class DescuentoDAO extends AbstraccionDAO<Descuento> implements Serializa
             return Collections.emptyList();
         }
     }
-    
-    public List<Descuento> findVigentes() { //Busqueda descuentos vigentes
+
+    public List<Descuento> findVigentes() {
         if (getEntityManager() == null) {
             return Collections.emptyList();
         }
         try {
             Date hoy = new Date();
             TypedQuery<Descuento> query = getEntityManager().createQuery(
-                "SELECT d FROM Descuento d WHERE d.fechaDesde <= :hoy AND (d.fechaHasta IS NULL OR d.fechaHasta >= :hoy)", 
-                Descuento.class
+                    "SELECT d FROM Descuento d WHERE d.fechaDesde <= :hoy AND (d.fechaHasta IS NULL OR d.fechaHasta >= :hoy)",
+                    Descuento.class
             );
             query.setParameter("hoy", hoy);
             return query.getResultList();
@@ -93,5 +88,26 @@ public class DescuentoDAO extends AbstraccionDAO<Descuento> implements Serializa
             e.printStackTrace();
             return Collections.emptyList();
         }
+    }
+
+    public long contarPorTipo(UUID idTipoDescuento) {
+        if (idTipoDescuento == null) {
+            return 0;
+        }
+        return em.createQuery(
+                "SELECT COUNT(d) FROM Descuento d WHERE d.idTipoDescuento = :id", Long.class)
+                .setParameter("id", idTipoDescuento)
+                .getSingleResult();
+    }
+
+    public List<Descuento> findByTipo(UUID idTipoDescuento) {
+        if (idTipoDescuento == null) {
+            return Collections.emptyList();
+        }
+        return em.createQuery(
+                "SELECT d FROM Descuento d WHERE d.idTipoDescuento = :id ORDER BY d.nombre",
+                Descuento.class)
+                .setParameter("id", idTipoDescuento)
+                .getResultList();
     }
 }
