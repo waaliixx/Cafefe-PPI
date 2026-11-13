@@ -81,4 +81,45 @@ class OrdenProductoDAOTest {
         when(consulta.getResultList()).thenThrow(new PersistenceException("Fallo"));
         assertTrue(dao.findByOrden(id).isEmpty());
     }
+
+    @Test
+    void findNoFacturadasByOrdenUsaConsultaYParametros() {
+        UUID id = UUID.randomUUID();
+        when(em.createQuery(OrdenProductoDAO.JPQL_NO_FACTURADAS, OrdenProducto.class)).thenReturn(consulta);
+        when(consulta.setParameter("id", id)).thenReturn(consulta);
+        when(consulta.setParameter("anulada", "Anulada")).thenReturn(consulta);
+        List<OrdenProducto> datos = List.of(new OrdenProducto(UUID.randomUUID()));
+        when(consulta.getResultList()).thenReturn(datos);
+        assertSame(datos, dao.findNoFacturadasByOrden(id));
+        verify(consulta).setParameter("id", id);
+        verify(consulta).setParameter("anulada", "Anulada");
+    }
+
+    @Test
+    void findNoFacturadasByOrdenNullNoConsulta() {
+        assertTrue(dao.findNoFacturadasByOrden(null).isEmpty());
+        verifyNoInteractions(em);
+    }
+
+    @Test
+    void findNoFacturadasByOrdenSinEntityManagerNoConsulta() {
+        assertTrue(new OrdenProductoDAO().findNoFacturadasByOrden(UUID.randomUUID()).isEmpty());
+        verifyNoInteractions(em);
+    }
+
+    @Test
+    void findNoFacturadasByOrdenErrorAlCrearConsulta() {
+        when(em.createQuery(OrdenProductoDAO.JPQL_NO_FACTURADAS, OrdenProducto.class)).thenThrow(new PersistenceException("Fallo"));
+        assertTrue(dao.findNoFacturadasByOrden(UUID.randomUUID()).isEmpty());
+    }
+
+    @Test
+    void findNoFacturadasByOrdenErrorAlEjecutarConsulta() {
+        UUID id = UUID.randomUUID();
+        when(em.createQuery(OrdenProductoDAO.JPQL_NO_FACTURADAS, OrdenProducto.class)).thenReturn(consulta);
+        when(consulta.setParameter("id", id)).thenReturn(consulta);
+        when(consulta.setParameter("anulada", "Anulada")).thenReturn(consulta);
+        when(consulta.getResultList()).thenThrow(new PersistenceException("Fallo"));
+        assertTrue(dao.findNoFacturadasByOrden(id).isEmpty());
+    }
 }

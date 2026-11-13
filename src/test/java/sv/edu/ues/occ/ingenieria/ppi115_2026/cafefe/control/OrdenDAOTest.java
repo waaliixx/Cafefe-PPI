@@ -90,4 +90,40 @@ class OrdenDAOTest {
         when(consulta.getResultList()).thenReturn(List.of());
         assertTrue(dao.findByFechaCreacion(valor).isEmpty());
     }
+
+    @Test
+    void findPendientesDePagoUsaConsultaYParametroAnulada() {
+        when(em.createQuery(OrdenDAO.JPQL_PENDIENTES_DE_PAGO, Orden.class)).thenReturn(consulta);
+        when(consulta.setParameter("anulada", "Anulada")).thenReturn(consulta);
+        List<Orden> esperado = List.of(new Orden(UUID.randomUUID()));
+        when(consulta.getResultList()).thenReturn(esperado);
+        assertSame(esperado, dao.findPendientesDePago());
+        verify(consulta).setParameter("anulada", "Anulada");
+    }
+
+    @Test
+    void findPendientesDePagoSinEntityManagerDevuelveListaVacia() {
+        assertTrue(new OrdenDAO().findPendientesDePago().isEmpty());
+        verifyNoInteractions(em);
+    }
+
+    @Test
+    void findPendientesDePagoConErrorDevuelveListaVacia() {
+        when(em.createQuery(OrdenDAO.JPQL_PENDIENTES_DE_PAGO, Orden.class)).thenThrow(new PersistenceException("Fallo"));
+        assertTrue(dao.findPendientesDePago().isEmpty());
+    }
+
+    @Test
+    void findPendientesDePagoConErrorAlEjecutar() {
+        when(em.createQuery(OrdenDAO.JPQL_PENDIENTES_DE_PAGO, Orden.class)).thenReturn(consulta);
+        when(consulta.setParameter("anulada", "Anulada")).thenReturn(consulta);
+        when(consulta.getResultList()).thenThrow(new PersistenceException("Fallo"));
+        assertTrue(dao.findPendientesDePago().isEmpty());
+    }
+
+    @Test
+    void jpqlDePendientesIgnoraFacturasAnuladas() {
+        assertTrue(OrdenDAO.JPQL_PENDIENTES_DE_PAGO.contains("<> :anulada"));
+        assertTrue(OrdenDAO.JPQL_PENDIENTES_DE_PAGO.contains("NOT EXISTS"));
+    }
 }
