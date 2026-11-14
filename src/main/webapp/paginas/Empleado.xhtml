@@ -141,8 +141,9 @@
                                     <f:selectItem itemLabel="-- Sin rol --" itemValue=""
                                                   noSelectionOption="true" />
                                     <f:selectItems value="#{empleadoModel.rolesDisponibles}" var="r"
-                                                   itemLabel="#{r.nombre}#{r.activo ? '' : ' (INACTIVO)'}"
-                                                   itemValue="#{r.idRol.toString()}" />
+                                                   itemLabel="#{r.nombre}"
+                                                   itemValue="#{r.idRol.toString()}" 
+                                                   itemDisabled="#{!r.activo and r.idRol.toString() ne empleadoModel.idRolSeleccionado}"/>
                                 </p:selectOneMenu>
                             </p:panelGrid>
                         </p:tab>
