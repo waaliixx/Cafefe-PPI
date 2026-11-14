@@ -24,6 +24,9 @@ class CajaDAOTest {
     @Mock
     TypedQuery<Caja> consulta;
 
+    @Mock
+    TypedQuery<Long> conteo;
+
     @InjectMocks
     CajaDAO dao;
 
@@ -144,5 +147,35 @@ class CajaDAOTest {
         when(em.createNamedQuery("Caja.findByActivo", Caja.class)).thenReturn(consulta);
         when(consulta.getResultList()).thenReturn(List.of());
         assertTrue(dao.findByActivo(valor).isEmpty());
+    }
+
+    @Test
+    void contarFacturasUsaConsultaYParametroCorrectos() {
+        UUID id = UUID.randomUUID();
+        when(em.createQuery(CajaDAO.JPQL_CONTAR_FACTURAS, Long.class)).thenReturn(conteo);
+        when(conteo.setParameter("id", id)).thenReturn(conteo);
+        when(conteo.getSingleResult()).thenReturn(4L);
+        assertEquals(4L, dao.contarFacturas(id));
+        verify(conteo).setParameter("id", id);
+    }
+
+    @Test
+    void contarFacturasConNullNoConsulta() {
+        assertEquals(0L, dao.contarFacturas(null));
+        verifyNoInteractions(em);
+    }
+
+    @Test
+    void contarFacturasSinEntityManagerDevuelveCero() {
+        assertEquals(0L, new CajaDAO().contarFacturas(UUID.randomUUID()));
+        verifyNoInteractions(em);
+    }
+
+    @Test
+    void contarFacturasConErrorPropagaExcepcion() {
+        UUID id = UUID.randomUUID();
+        PersistenceException error = new PersistenceException("Fallo simulado");
+        when(em.createQuery(CajaDAO.JPQL_CONTAR_FACTURAS, Long.class)).thenThrow(error);
+        assertSame(error, assertThrows(PersistenceException.class, () -> dao.contarFacturas(id)));
     }
 }

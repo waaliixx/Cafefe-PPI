@@ -8,9 +8,131 @@
                 template="/WEB-INF/templates/plantilla.xhtml">
 
     <ui:define name="titulo_pagina">
-        Caja
+        Cajas
     </ui:define>
     <ui:define name="contenido">
-        
+        <h:form id="frmCaja">
+            <p:growl id="messages" showDetail="true" life="4000" />
+
+            <p:panel header="Cajas">
+
+                <h:panelGroup rendered="#{!cajaModel.mostrarFormulario}">
+
+                    <p:toolbar id="barra" style="margin-bottom: 15px;">
+                        <p:toolbarGroup>
+                            <p:commandButton value="Nueva Caja"
+                                             actionListener="#{cajaModel.nuevo()}"
+                                             process="@this"
+                                             update="@form"
+                                             icon="pi pi-plus"
+                                             styleClass="ui-button-success" />
+                        </p:toolbarGroup>
+
+                        <p:toolbarGroup align="right">
+                            <h:outputText rendered="#{cajaModel.seleccionado != null}"
+                                          value="Seleccionado: #{cajaModel.seleccionado.nombre}"
+                                          style="margin-right: 15px; font-weight: 600;" />
+                            <h:outputText rendered="#{cajaModel.seleccionado == null}"
+                                          value="Seleccione una caja de la tabla para editarlo o eliminarlo"
+                                          style="margin-right: 15px; color: #6b7280;" />
+
+                            <p:commandButton value="Editar"
+                                             actionListener="#{cajaModel.editar(cajaModel.seleccionado)}"
+                                             process="@this"
+                                             update="@form"
+                                             disabled="#{cajaModel.seleccionado == null}"
+                                             icon="pi pi-pencil"
+                                             styleClass="ui-button-warning"
+                                             style="margin-right: 8px;" />
+
+                            <p:commandButton value="Eliminar"
+                                             actionListener="#{cajaModel.eliminar(cajaModel.seleccionado)}"
+                                             process="@this"
+                                             update="@form"
+                                             disabled="#{cajaModel.seleccionado == null}"
+                                             icon="pi pi-trash"
+                                             styleClass="ui-button-danger">
+                                <p:confirm header="Confirmación"
+                                           message="¿Desea eliminar esta caja?"
+                                           icon="pi pi-exclamation-triangle" />
+                            </p:commandButton>
+                        </p:toolbarGroup>
+                    </p:toolbar>
+
+                    <p:dataTable id="tablaCajas" value="#{cajaModel.registros}" var="item"
+                                 selectionMode="single"
+                                 selection="#{cajaModel.seleccionado}"
+                                 rowKey="#{item.idCaja}"
+                                 paginator="true" rows="5"
+                                 emptyMessage="Sin registros previos.">
+
+                        <p:ajax event="rowSelect" update=":frmCaja:barra" />
+                        <p:ajax event="rowUnselect" update=":frmCaja:barra" />
+
+                        <p:column headerText="ID Caja" style="width: 280px;">
+                            <h:outputText value="#{item.idCaja}" />
+                        </p:column>
+
+                        <p:column headerText="Nombre">
+                            <h:outputText value="#{item.nombre}" />
+                        </p:column>
+
+                        <p:column headerText="Estado" style="text-align: center; width: 100px;">
+                            <p:tag value="#{item.activo ? 'ACTIVO' : 'INACTIVO'}"
+                                   severity="#{item.activo ? 'success' : 'danger'}" />
+                        </p:column>
+
+                        <p:column headerText="Observaciones">
+                            <h:outputText value="#{item.observaciones}" />
+                        </p:column>
+                    </p:dataTable>
+                </h:panelGroup>
+
+                <p:panel header="#{cajaModel.creando ? 'Nueva Caja' : 'Editar Caja'}"
+                         rendered="#{cajaModel.mostrarFormulario}">
+
+                    <p:panelGrid columns="2" styleClass="ui-panelgrid-blank">
+                        <p:outputLabel for="id" value="ID:" />
+                        <p:inputText id="id" value="#{cajaModel.registro.idCaja}"
+                                     disabled="true"
+                                     style="width: 100%; min-width: 320px;" />
+
+                        <p:outputLabel for="nombre" value="Nombre de la Caja:" />
+                        <p:inputText id="nombre" value="#{cajaModel.registro.nombre}"
+                                     required="true"
+                                     requiredMessage="El nombre de la caja es obligatorio"
+                                     placeholder="Ej: Caja 1, Caja principal" />
+
+                        <p:outputLabel for="activo" value="Activo:" />
+                        <p:selectBooleanCheckbox id="activo" value="#{cajaModel.registro.activo}" />
+
+                        <p:outputLabel for="observaciones" value="Observaciones:" />
+                        <p:inputTextarea id="observaciones" value="#{cajaModel.registro.observaciones}"
+                                         rows="3" cols="30" />
+                    </p:panelGrid>
+
+                    <div style="margin-top: 15px;">
+                        <p:commandButton value="Guardar" icon="pi pi-save" action="#{cajaModel.guardar}"
+                                         process="@form" update="@form" styleClass="ui-button-success" 
+                                         style="margin-right: 8px;"/>
+                        <p:commandButton value="Cancelar"
+                                         actionListener="#{cajaModel.cancelar()}"
+                                         process="@this"
+                                         update="@form"
+                                         immediate="true"
+                                         icon="pi pi-times"
+                                         styleClass="ui-button-secondary" />
+                    </div>
+                </p:panel>
+            </p:panel>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+                             responsive="true" width="350">
+                <p:commandButton value="No" type="button"
+                                 styleClass="ui-confirmdialog-no ui-button-flat" />
+                <p:commandButton value="Sí" type="button"
+                                 styleClass="ui-confirmdialog-yes" />
+            </p:confirmDialog>
+        </h:form>
     </ui:define>
 </ui:composition>
