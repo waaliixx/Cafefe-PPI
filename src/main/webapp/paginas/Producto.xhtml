@@ -23,6 +23,7 @@
                             <p:commandButton value="Nuevo Producto"
                                              actionListener="#{productoModel.nuevo()}"
                                              process="@this" update="@form" resetValues="true"
+                                             oncomplete="PF('wTabsProducto').select(0)"
                                              icon="pi pi-plus" styleClass="ui-button-success" />
                         </p:toolbarGroup>
 
@@ -37,6 +38,7 @@
                             <p:commandButton value="Editar"
                                              actionListener="#{productoModel.editar(productoModel.seleccionado)}"
                                              process="@this" update="@form" resetValues="true"
+                                             oncomplete="PF('wTabsProducto').select(0)"
                                              disabled="#{productoModel.seleccionado == null}"
                                              icon="pi pi-pencil" styleClass="ui-button-warning"
                                              style="margin-right: 8px;" />
@@ -87,7 +89,7 @@
                 <p:panel header="#{productoModel.creando ? 'Nuevo Producto' : 'Editar Producto'}"
                          rendered="#{productoModel.mostrarFormulario}">
 
-                    <p:tabView id="tabsProducto">
+                    <p:tabView id="tabsProducto" widgetVar="wTabsProducto">
 
                         <p:tab title="Generalidades">
                             <p:panelGrid columns="2" styleClass="ui-panelgrid-blank">

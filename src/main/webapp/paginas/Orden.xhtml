@@ -23,6 +23,7 @@
                             <p:commandButton value="Nueva Orden"
                                              actionListener="#{ordenModel.nuevo()}"
                                              process="@this" update="@form" resetValues="true"
+                                             oncomplete="PF('wTabsOrden').select(0)"
                                              icon="pi pi-plus" styleClass="ui-button-success" />
                         </p:toolbarGroup>
 
@@ -37,6 +38,7 @@
                             <p:commandButton value="Agregar Productos"
                                              actionListener="#{ordenModel.editar(ordenModel.seleccionado)}"
                                              process="@this" update="@form" resetValues="true"
+                                             oncomplete="PF('wTabsOrden').select(0)"
                                              disabled="#{ordenModel.seleccionado == null}"
                                              icon="pi pi-plus" styleClass="ui-button-warning"
                                              style="margin-right: 8px;" />
@@ -81,7 +83,7 @@
                 <p:panel header="#{ordenModel.creando ? 'Nueva Orden' : 'Editar Orden'}"
                          rendered="#{ordenModel.mostrarFormulario}">
 
-                    <p:tabView id="tabsOrden">
+                    <p:tabView id="tabsOrden" widgetVar="wTabsOrden">
 
                         <p:tab title="Generalidades">
                             <p:panelGrid columns="2" styleClass="ui-panelgrid-blank">
