@@ -87,7 +87,8 @@
                                          required="true" requiredMessage="Selecciona un tipo de descuento.">
                             <f:selectItem itemLabel="Seleccione un tipo" itemValue="" noSelectionOption="true" />
                             <f:selectItems value="#{dmodel.tiposDescuento}" var="tipo"
-                                           itemLabel="#{tipo.nombre}" itemValue="#{tipo.idTipoDescuento.toString()}" />
+                                           itemLabel="#{tipo.nombre}" itemValue="#{tipo.idTipoDescuento.toString()}"
+                                           itemDisabled="#{!tipo.activo and tipo.idTipoDescuento.toString() ne dmodel.idTipoDescuentoSeleccionado}" />
                         </p:selectOneMenu>
                         <p:outputLabel for="fechaDesde" value="Fecha de inicio" />
                         <p:datePicker id="fechaDesde" value="#{dmodel.registro.fechaDesde}"

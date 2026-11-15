@@ -23,6 +23,7 @@
                             <p:commandButton value="Nuevo Empleado"
                                              actionListener="#{empleadoModel.nuevo()}"
                                              process="@this"
+                                             oncomplete="PF('wTabsEmpleado').select(0)"
                                              update="@form"
                                              icon="pi pi-plus"
                                              styleClass="ui-button-success" />
@@ -39,6 +40,7 @@
                             <p:commandButton value="Editar"
                                              actionListener="#{empleadoModel.editar(empleadoModel.seleccionado)}"
                                              process="@this"
+                                             oncomplete="PF('wTabsEmpleado').select(0)"
                                              update="@form"
                                              disabled="#{empleadoModel.seleccionado == null}"
                                              icon="pi pi-pencil"
@@ -100,7 +102,7 @@
                 <p:panel header="#{empleadoModel.creando ? 'Nuevo Empleado' : 'Editar Empleado'}"
                          rendered="#{empleadoModel.mostrarFormulario}">
 
-                    <p:tabView id="tabsEmpleado">
+                    <p:tabView id="tabsEmpleado" widgetVar="wTabsEmpleado">
 
                         <p:tab title="Empleado">
                             <p:panelGrid columns="2" styleClass="ui-panelgrid-blank">
@@ -141,8 +143,9 @@
                                     <f:selectItem itemLabel="-- Sin rol --" itemValue=""
                                                   noSelectionOption="true" />
                                     <f:selectItems value="#{empleadoModel.rolesDisponibles}" var="r"
-                                                   itemLabel="#{r.nombre}#{r.activo ? '' : ' (INACTIVO)'}"
-                                                   itemValue="#{r.idRol.toString()}" />
+                                                   itemLabel="#{r.nombre}"
+                                                   itemValue="#{r.idRol.toString()}" 
+                                                   itemDisabled="#{!r.activo and r.idRol.toString() ne empleadoModel.idRolSeleccionado}"/>
                                 </p:selectOneMenu>
                             </p:panelGrid>
                         </p:tab>

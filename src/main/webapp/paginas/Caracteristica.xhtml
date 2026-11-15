@@ -118,8 +118,9 @@
                             <f:selectItem itemLabel="-- Seleccione un tipo --" itemValue=""
                                           noSelectionOption="true" />
                             <f:selectItems value="#{caracteristicaModel.tiposDisponibles}" var="t"
-                                           itemLabel="#{t.nombre} (#{t.expresionRegular})#{t.activo ? '' : ' - INACTIVO'}"
-                                           itemValue="#{t.idTipoCaracteristica.toString()}" />
+                                           itemLabel="#{t.nombre} (#{t.expresionRegular})"
+                                           itemValue="#{t.idTipoCaracteristica.toString()}"
+                                           itemDisabled="#{!t.activo and t.idTipoCaracteristica.toString() ne caracteristicaModel.idTipoSeleccionado}"/>
                         </p:selectOneMenu>
 
                         <p:outputLabel for="activo" value="Activo:" />
