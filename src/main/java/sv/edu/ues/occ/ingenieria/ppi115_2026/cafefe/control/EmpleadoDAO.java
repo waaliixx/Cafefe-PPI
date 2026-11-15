@@ -69,5 +69,20 @@ public class EmpleadoDAO extends AbstraccionDAO<Empleado> implements Serializabl
             return Collections.emptyList();
         }
     }
-
+    
+    /** Empleados cuyo nombre coincide sin distinguir mayúsculas (se usa en el login). */
+    public List<Empleado> findByNombreIgnoreCase(String nombre) {
+        if (nombre == null || nombre.trim().isEmpty() || getEntityManager() == null) {
+            return Collections.emptyList();
+        }
+        try {
+            return getEntityManager()
+                    .createQuery("SELECT e FROM Empleado e WHERE LOWER(e.nombre) = :nombre", Empleado.class)
+                    .setParameter("nombre", nombre.trim().toLowerCase())
+                    .getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
 }
