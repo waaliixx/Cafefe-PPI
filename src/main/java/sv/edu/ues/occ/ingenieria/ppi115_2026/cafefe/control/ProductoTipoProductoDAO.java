@@ -39,4 +39,16 @@ public class ProductoTipoProductoDAO extends AbstraccionDAO<ProductoTipoProducto
                 .setParameter("id", idProducto)
                 .getResultList();
     }
+    
+    /** Productos asignados a una categoría (tipo de producto), ordenados por nombre. */
+    public List<ProductoTipoProducto> findByTipoProducto(UUID idTipoProducto) {
+        if (idTipoProducto == null) {
+            return Collections.emptyList();
+        }
+        return em.createQuery(
+                "SELECT p FROM ProductoTipoProducto p JOIN FETCH p.idProducto "
+                + "WHERE p.idTipoProducto.idTipoProducto = :id ORDER BY p.idProducto.nombre", ProductoTipoProducto.class)
+                .setParameter("id", idTipoProducto)
+                .getResultList();
+    }
 }
