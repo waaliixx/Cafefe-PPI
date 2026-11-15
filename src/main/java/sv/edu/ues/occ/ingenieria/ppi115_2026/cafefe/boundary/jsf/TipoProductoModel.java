@@ -24,7 +24,7 @@ import org.primefaces.model.SortMeta;
  */
 @Named("tpModel")
 @ViewScoped
-public class tipoProductoModel extends AbstraccionModel<TipoProducto> {
+public class TipoProductoModel extends AbstraccionModel<TipoProducto> {
 
     @Inject
     private TipoProductoDAO tipoProductoDAO;

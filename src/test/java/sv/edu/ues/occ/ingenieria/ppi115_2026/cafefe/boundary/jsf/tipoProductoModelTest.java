@@ -1,7 +1,7 @@
 package sv.edu.ues.occ.ingenieria.ppi115_2026.cafefe.boundary.jsf;
 
 import sv.edu.ues.occ.ingenieria.ppi115_2026.cafefe.boundary.jsf.Estado;
-import sv.edu.ues.occ.ingenieria.ppi115_2026.cafefe.boundary.jsf.tipoProductoModel;
+import sv.edu.ues.occ.ingenieria.ppi115_2026.cafefe.boundary.jsf.TipoProductoModel;
 import jakarta.faces.application.FacesMessage;
 import java.util.List;
 import java.util.Map;
@@ -14,11 +14,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import sv.edu.ues.occ.ingenieria.ppi115_2026.cafefe.control.TipoProductoDAO;
 
-/** Pruebas de comportamiento de tipoProductoModel, con DAO y contexto JSF simulados. */
+/** Pruebas de comportamiento de TipoProductoModel, con DAO y contexto JSF simulados. */
 class tipoProductoModelTest extends ModelTestSupport {
 
     @Mock TipoProductoDAO tipoProductoDAO;
-    @InjectMocks tipoProductoModel model;
+    @InjectMocks TipoProductoModel model;
 
 
     @Test
