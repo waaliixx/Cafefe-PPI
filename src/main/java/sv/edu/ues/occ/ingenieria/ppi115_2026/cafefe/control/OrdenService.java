@@ -55,7 +55,7 @@ public class OrdenService {
         }
     }
 
-    /** Falta el empleado "mesero virtual" → 503. */
+    /** Falta un empleado activo con el rol "Camarero" → 503. */
     @ApplicationException(rollback = true)
     public static class ConfiguracionIncompletaException extends RuntimeException {
 
@@ -91,7 +91,7 @@ public class OrdenService {
         }
         String cliente = validarCliente(solicitud.cliente);
         List<Linea> lineas = validarLineas(solicitud.items);
-        EmpleadoRol mesero = buscarMeseroVirtual();
+        EmpleadoRol mesero = buscarCamareroActivo();
 
         // Se valida todo antes de guardar: productos que existan, activos y con precio.
         Map<UUID, Producto> productos = new HashMap<>();
@@ -186,14 +186,14 @@ public class OrdenService {
         return lineas;
     }
 
-    /** Empleado activo cuyo rol (activo) sea "Tienda en línea" o "Mesero Virtual". */
-    private EmpleadoRol buscarMeseroVirtual() {
+    /** Empleado activo con asignación activa al rol activo "Camarero". */
+    private EmpleadoRol buscarCamareroActivo() {
         List<EmpleadoRol> activos = em.createQuery(
                 "SELECT er FROM EmpleadoRol er WHERE er.activo = :activo", EmpleadoRol.class)
                 .setParameter("activo", Boolean.TRUE)
                 .getResultList();
         for (EmpleadoRol er : activos) {
-            if (!ReglasOrden.esRolEnLinea(er.getIdRol()) || !Boolean.TRUE.equals(er.getIdRol().getActivo())) {
+            if (!ReglasOrden.esCamarero(er.getIdRol()) || !Boolean.TRUE.equals(er.getIdRol().getActivo())) {
                 continue;
             }
             Empleado e = er.getIdEmpleado() == null ? null : em.find(Empleado.class, er.getIdEmpleado());
@@ -202,7 +202,7 @@ public class OrdenService {
             }
         }
         throw new ConfiguracionIncompletaException(
-                "Falta configurar el mesero virtual: cree el rol \"Tienda en línea\" y un empleado activo con ese rol.");
+                "Debe existir un empleado activo con una asignación activa al rol activo \"Camarero\".");
     }
 
     // ---------------------------------------------------------------- HU3 y HU4: pendientes
@@ -266,7 +266,7 @@ public class OrdenService {
         return dto;
     }
 
-    // "Mesero Virtual (Tienda en línea)" o "Javier Herrera (Camarero)".
+    // Ejemplo: "Javier Herrera (Camarero)".
     private String tomadaPor(EmpleadoRol er, Map<UUID, String> nombres) {
         if (er == null || er.getIdEmpleado() == null) {
             return null;

@@ -31,6 +31,11 @@ public final class ReglasOrden {
         return rol != null && ROLES_EN_LINEA.contains(normalizar(rol.getNombre()));
     }
 
+    /** Rol requerido para asignar los pedidos creados desde el frontend. */
+    public static boolean esCamarero(Rol rol) {
+        return rol != null && "camarero".equals(normalizar(rol.getNombre()));
+    }
+
     public static String formatearObservaciones(String cliente, String nota) {
         if (nota == null || nota.isBlank()) {
             return PREFIJO_CLIENTE + cliente;
