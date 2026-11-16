@@ -2,6 +2,7 @@ package sv.edu.ues.occ.ingenieria.ppi115_2026.cafefe.boundary.rest;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -59,6 +60,7 @@ public class OrdenResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
+    @Transactional(rollbackOn = Exception.class)
     public Response crear(OrdenService.SolicitudOrden solicitud, @Context UriInfo uriInfo) {
         Map<String, Object> resultado = ordenService.crearOrden(solicitud);
         URI location = uriInfo.getAbsolutePathBuilder()
@@ -85,6 +87,7 @@ public class OrdenResource {
     @POST
     @Path("{id}/cobro")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Transactional(rollbackOn = Exception.class)
     public Response cobrar(@PathParam("id") UUID id, SolicitudCobro solicitud, @Context UriInfo uriInfo) {
         if (solicitud == null) {
             return ErrorMapper.invalido("registro", "El cuerpo del cobro es obligatorio.");
