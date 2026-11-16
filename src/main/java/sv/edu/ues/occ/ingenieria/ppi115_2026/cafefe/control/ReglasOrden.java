@@ -18,7 +18,6 @@ public final class ReglasOrden {
     private ReglasOrden() {
     }
 
-    /** "  Tienda  en LÍNEA " → "tienda en linea" (para comparar sin importar tildes ni mayúsculas). */
     public static String normalizar(String texto) {
         if (texto == null) {
             return "";
@@ -29,6 +28,11 @@ public final class ReglasOrden {
 
     public static boolean esRolEnLinea(Rol rol) {
         return rol != null && ROLES_EN_LINEA.contains(normalizar(rol.getNombre()));
+    }
+
+    /** Rol requerido para asignar los pedidos creados desde el frontend. */
+    public static boolean esCamarero(Rol rol) {
+        return rol != null && "camarero".equals(normalizar(rol.getNombre()));
     }
 
     public static String formatearObservaciones(String cliente, String nota) {
