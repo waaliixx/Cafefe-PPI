@@ -18,6 +18,7 @@ public final class ReglasOrden {
     private ReglasOrden() {
     }
 
+    /** "  Tienda  en LÍNEA " → "tienda en linea" (para comparar sin importar tildes ni mayúsculas). */
     public static String normalizar(String texto) {
         if (texto == null) {
             return "";
