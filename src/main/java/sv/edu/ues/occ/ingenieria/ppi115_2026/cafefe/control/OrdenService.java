@@ -10,6 +10,7 @@ import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Set;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,6 +32,8 @@ public class OrdenService {
 
     @PersistenceContext(unitName = "CafefePU")
     private EntityManager em;
+    @Inject
+    private PreparacionTemporal estados;
     @Inject
     private OrdenDAO ordenDAO;
     @Inject
@@ -205,6 +208,53 @@ public class OrdenService {
                 "Debe existir un empleado activo con una asignación activa al rol activo \"Camarero\".");
     }
 
+    // ---------------------------------------------------------------- HU3: estados en memoria del servidor (sin migraciones SQL)
+
+    /** No depende de las facturas: una orden pagada aún puede estar en cocina. */
+    public List<Map<String, Object>> preparacion() {
+        List<Orden> ordenes = em.createQuery(
+                "SELECT o FROM Orden o WHERE EXISTS (SELECT op FROM OrdenProducto op WHERE op.idOrden = o) "
+                + "ORDER BY o.fechaCreacion", Orden.class).getResultList();
+        List<Map<String, Object>> resultado = new ArrayList<>();
+        Map<UUID, String> nombres = new HashMap<>();
+        for (Orden o : ordenes) {
+            if (!estados.despachada(o.getIdOrden())) {
+                resultado.add(ordenDto(o, ordenProductoDAO.findByOrden(o.getIdOrden()), nombres));
+            }
+        }
+        return resultado;
+    }
+
+    public Map<String, Object> detallePreparacion(UUID id) {
+        Orden orden = id == null ? null : em.find(Orden.class, id);
+        return orden == null ? null : ordenDto(orden, ordenProductoDAO.findByOrden(id), new HashMap<>());
+    }
+
+    public Map<String, Object> cambiarPreparacion(UUID idOrden, UUID idLinea, String estado) {
+        Orden orden = idOrden == null ? null : em.find(Orden.class, idOrden);
+        if (orden == null) throw new jakarta.ws.rs.NotFoundException("La orden no existe.");
+        OrdenProducto linea = idLinea == null ? null : em.find(OrdenProducto.class, idLinea);
+        if (linea == null || linea.getIdOrden() == null || !idOrden.equals(linea.getIdOrden().getIdOrden()))
+            throw new jakarta.ws.rs.NotFoundException("El producto no pertenece a la orden.");
+        estados.cambiar(idOrden, idLinea, estado);
+        return detallePreparacion(idOrden);
+    }
+
+    public Map<String, Object> despachar(UUID idOrden) {
+        Orden orden = idOrden == null ? null : em.find(Orden.class, idOrden);
+        if (orden == null) throw new jakarta.ws.rs.NotFoundException("La orden no existe.");
+        List<OrdenProducto> lineas = ordenProductoDAO.findByOrden(idOrden);
+        if (lineas.isEmpty()) throw new jakarta.ws.rs.ClientErrorException("La orden no contiene productos.", 409);
+        Set<UUID> ids = new java.util.HashSet<>();
+        for (OrdenProducto linea : lineas) ids.add(linea.getIdOrdenProducto());
+        estados.despachar(idOrden, ids);
+        return detallePreparacion(idOrden);
+    }
+
+    public static boolean transicionValida(String anterior, String nuevo) {
+        return PreparacionTemporal.transicionValida(anterior, nuevo);
+    }
+
     // ---------------------------------------------------------------- HU3 y HU4: pendientes
 
     /** Órdenes con productos sin cobrar, cada una con SOLO sus productos pendientes. */
@@ -252,11 +302,14 @@ public class OrdenService {
             linea.put("idProducto", op.getIdProducto() != null ? op.getIdProducto().getIdProducto().toString() : null);
             linea.put("producto", op.getIdProducto() != null ? op.getIdProducto().getNombre() : null);
             linea.put("precio", precio);
+            linea.put("estadoPreparacion", estados.estado(o.getIdOrden(), op.getIdOrdenProducto()));
             linea.put("nota", ReglasOrden.notaDe(op.getObservaciones()));
             productos.add(linea);
         }
         Map<String, Object> dto = new LinkedHashMap<>();
         dto.put("idOrden", o.getIdOrden().toString());
+        dto.put("fechaDespacho", estados.fechaDespacho(o.getIdOrden()));
+        dto.put("estadoPreparacion", estadoGeneral(o.getIdOrden(), lineas));
         dto.put("fechaCreacion", o.getFechaCreacion() != null
                 ? Instant.ofEpochMilli(o.getFechaCreacion().getTime()).toString() : null);
         dto.put("cliente", cliente);
@@ -264,6 +317,14 @@ public class OrdenService {
         dto.put("total", total.setScale(2, RoundingMode.HALF_UP));
         dto.put("productos", productos);
         return dto;
+    }
+
+    private String estadoGeneral(UUID idOrden, List<OrdenProducto> lineas) {
+        if (estados.despachada(idOrden)) return "DESPACHADA";
+        if (lineas.isEmpty()) return "PENDIENTE";
+        if (lineas.stream().allMatch(l -> "LISTO".equals(estados.estado(idOrden, l.getIdOrdenProducto())))) return "LISTO";
+        if (lineas.stream().anyMatch(l -> !"PENDIENTE".equals(estados.estado(idOrden, l.getIdOrdenProducto())))) return "PREPARANDO";
+        return "PENDIENTE";
     }
 
     // Ejemplo: "Javier Herrera (Camarero)".

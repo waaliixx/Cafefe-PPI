@@ -5,6 +5,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -80,6 +81,38 @@ public class OrdenResource {
             return ErrorMapper.noEncontrado(id, "La orden no existe.");
         }
         return Response.ok(orden).build();
+    }
+
+    public static class CambioEstado {
+        public String estado;
+    }
+
+    @GET
+    @Path("preparacion")
+    public Response preparacion() {
+        return Response.ok(ordenService.preparacion()).build();
+    }
+
+    @GET
+    @Path("{id}/preparacion")
+    public Response detallePreparacion(@PathParam("id") UUID id) {
+        Map<String, Object> detalle = ordenService.detallePreparacion(id);
+        return detalle == null ? ErrorMapper.noEncontrado(id, "La orden no existe.") : Response.ok(detalle).build();
+    }
+
+    @PUT
+    @Path("{id}/producto/{idLinea}/preparacion")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response cambiarEstado(@PathParam("id") UUID id, @PathParam("idLinea") UUID idLinea, CambioEstado cambio) {
+        if (cambio == null || cambio.estado == null)
+            return ErrorMapper.invalido("estado", "Indique el estado de preparación.");
+        return Response.ok(ordenService.cambiarPreparacion(id, idLinea, cambio.estado)).build();
+    }
+
+    @PUT
+    @Path("{id}/despacho")
+    public Response despachar(@PathParam("id") UUID id) {
+        return Response.ok(ordenService.despachar(id)).build();
     }
 
     @POST
